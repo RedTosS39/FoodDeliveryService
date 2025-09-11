@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<hr/>
+<p th:text="${'id: ' + profile.get().getId()}">VALUE</p>
+<p th:text="${'Имя: '  + profile.get().name}">VALUE</p>
+<p th:text="${'Последнее обновление: ' + profile.get().getUpdatedDate()}">VALUE</p>
+
+<a th:href="@{/users/{id}/edit-profile(id=${profile.get().getId()})}">Edit</a>
+
+<form th:method="DELETE" th:action="@{/users/{id}(id=${profile.get().getId()})}">
+    <input type="submit" value="Delete"/>
+</form>
+
+</body>
+</html>
