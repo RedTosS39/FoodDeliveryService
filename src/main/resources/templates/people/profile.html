@@ -6,12 +6,18 @@
 </head>
 <body>
 <hr/>
-<p th:text="${'id: ' + profile.get().getId()}">VALUE</p>
-<p th:text="${'Имя: '  + profile.get().name}">VALUE</p>
+<p th:text="${'id Пользователя: ' + profile.get().getId()}">VALUE</p>
+<br/>
+<p th:text="${'Имя пользователя: '  + profile.get().name}">VALUE</p>
+
 <p th:text="${'Последнее обновление: ' + profile.get().getUpdatedDate()}">VALUE</p>
 
-<a th:href="@{/users/{id}/edit-profile(id=${profile.get().getId()})}">Edit</a>
+<p th:text="${'Тип пользователя: ' + profile.get().getRole().toString()}">VALUE</p>
 
+<hr/>
+
+<button name="edit"><a th:href="@{/users/{id}/edit-profile(id=${profile.get().getId()})}">Edit</a></button>
+<br/>
 <form th:method="DELETE" th:action="@{/users/{id}(id=${profile.get().getId()})}">
     <input type="submit" value="Delete"/>
 </form>

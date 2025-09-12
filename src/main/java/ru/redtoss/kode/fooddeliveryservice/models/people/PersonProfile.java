@@ -1,7 +1,10 @@
 package ru.redtoss.kode.fooddeliveryservice.models.people;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.redtoss.kode.fooddeliveryservice.models.Role;
 
 import java.time.LocalDate;
 
@@ -19,10 +22,18 @@ public class PersonProfile {
     private Person person;
 
     @Column(name = "NAME")
+    @NotNull(message = "Enter the username")
+    @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов")
     private String name;
 
     @Column(name = "ROLE")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "COURIER_ID", referencedColumnName = "ID")
+    private Courier courier;
+
 
 
     @Column(name = "UPDATED_DATE")
@@ -34,11 +45,28 @@ public class PersonProfile {
     }
 
 
-    public PersonProfile(int id, Person person, String name, LocalDate updatedDate, String role) {
+    public PersonProfile(int id, Person person, String name, Role role, Courier courier, LocalDate updatedDate) {
         this.id = id;
         this.person = person;
         this.name = name;
+        this.role = role;
+        this.courier = courier;
         this.updatedDate = updatedDate;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -75,18 +103,11 @@ public class PersonProfile {
         this.updatedDate = updatedDate;
     }
 
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     @Override
     public String toString() {
         return "PersonProfile{" +
-               ", profile=" + person +
                ", name='" + name + '\'' +
                ", updatedDate=" + updatedDate +
                ", role='" + role + '\'' +

@@ -2,6 +2,8 @@ package ru.redtoss.kode.fooddeliveryservice.models.people;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
@@ -14,8 +16,10 @@ public class Person {
     private int id;
 
 
-    @NotEmpty(message = "Enter the username")
+
     @Column(name = "USERNAME")
+    @NotNull(message = "Enter the username")
+    @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов")
     private String userName;
 
 
