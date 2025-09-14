@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Setter
@@ -56,6 +54,9 @@ public class PersonProfile {
     @Setter
     @Column(name = "isActive")
     private Boolean isActive = true;
+
+    @OneToOne(mappedBy = "personProfile")
+    private Cart cart;
 
 
     @Override
