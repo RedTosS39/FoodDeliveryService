@@ -5,12 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
-import ru.redtoss.kode.fooddeliveryservice.models.people.Courier;
+import ru.redtoss.kode.fooddeliveryservice.entities.Courier;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 
 @Controller
@@ -28,8 +25,13 @@ public class CourierController {
     @GetMapping
     public String showCouriers(Model model) {
         model.addAttribute("couriers", peopleService.findAllPeople(Role.COURIER));
-
         return "people/couriers";
+    }
+
+    @GetMapping("{id}")
+    public String showCourier(@PathVariable int id, Model model) {
+        model.addAttribute("courier", peopleService.findProfileById(id));
+        return "people/courier";
     }
 
     @GetMapping("/add-courier")
@@ -47,5 +49,14 @@ public class CourierController {
         }
         peopleService.createCourier(courier);
         return "redirect:/couriers";
+    }
+
+
+    //TODO: добавить страницу и эндпоинт
+    @PatchMapping("{id}/assign")
+    public String assignOrder(@PathVariable("id")int id, Model model) {
+
+
+        return "people/order";
     }
 }

@@ -7,7 +7,7 @@
 <body>
 
 
-<form th:method="POST" th:action="@{/users/{id}(id=${profile.id})}" th:object="${profile}">
+<form th:method="PUT" th:action="@{/users/{id}(id=${profile.id})}" th:object="${profile}">
 
     <label for="name">Enter new name: </label>
     <input type="text" th:field="*{name}" id="name"/>

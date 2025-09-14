@@ -1,22 +1,29 @@
-package ru.redtoss.kode.fooddeliveryservice.models.people;
+package ru.redtoss.kode.fooddeliveryservice.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
 
 @Entity
+@Getter
 @Table(name = "Person")
+@RequiredArgsConstructor
 public class Person {
-
     @Id
+    @Setter
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
 
-
+    @Setter
     @Column(name = "USERNAME")
     @NotNull(message = "Enter the username")
     @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов")
@@ -26,26 +33,19 @@ public class Person {
     @OneToOne(mappedBy = "person")
     private PersonProfile profile;
 
-    public Person() {
-    }
+    @Setter
+    @OneToMany(mappedBy = "people")
+    private List<FoodOrder> foodOrder;
 
-
-    public Person(int id, String userName, PersonProfile profile) {
-        this.id = id;
-        this.userName = userName;
-        this.profile = profile;
-    }
-
-    public PersonProfile getProfile() {
-        return profile;
-    }
 
     public void setProfile(PersonProfile profile) {
         this.profile = profile;
         if (profile != null) {
+            profile.setIsActive(true);
             profile.setPerson(this);
         }
     }
+
 
     public void removeProfile(PersonProfile profile) {
         if (profile != null) {
@@ -54,21 +54,7 @@ public class Person {
         this.profile = null;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
 
     @Override
