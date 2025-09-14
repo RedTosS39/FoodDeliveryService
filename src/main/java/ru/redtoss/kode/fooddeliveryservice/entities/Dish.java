@@ -21,9 +21,11 @@ public class Dish {
     @Column(name = "price")
     private int price;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
     private Menu menu;
 }
