@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.models.people.Person;
-import ru.redtoss.kode.fooddeliveryservice.models.people.PersonProfile;
+import ru.redtoss.kode.fooddeliveryservice.entities.Person;
+import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 
 @Controller
@@ -40,7 +40,6 @@ public class ProfileController {
     @GetMapping(value = "/{id}")
     public String getProfile(@PathVariable("id") int id, Model model) {
         model.addAttribute("profile", peopleService.findProfileById(id));
-
         return "people/profile";
     }
 
@@ -53,11 +52,10 @@ public class ProfileController {
     }
 
 
-    @PostMapping("{id}")
+    @PutMapping("{id}")
     public String updateProfile(@PathVariable("id") int id,
                                 @ModelAttribute("profile") @Valid PersonProfile profile,
                                 BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return "people/edit-profile";
         }
