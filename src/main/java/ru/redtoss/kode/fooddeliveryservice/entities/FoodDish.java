@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Dish")
+@Table(name = "Food_Dish")
 @Getter
 @NoArgsConstructor
-public class Dish {
+public class FoodDish {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", insertable=false, updatable=false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -21,11 +21,15 @@ public class Dish {
     @Column(name = "price")
     private int price;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
     private Cart cart;
 
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
-    private Menu menu;
+    private FoodMenu foodMenu;
+
+
 }
+
