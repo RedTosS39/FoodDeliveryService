@@ -1,7 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.controllers;
 
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.PersonDTO;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.Person;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
@@ -37,7 +35,9 @@ public class ProfileAPIController  implements ShowErrorMessage, ConvertEntity {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProfileDTO> findAll() {
-        return peopleService.findAllPeople(Role.BUYER).stream().map(this::converToProfileDTO).collect(Collectors.toList());
+        return peopleService.findAllPeople(Role.BUYER).stream()
+                .filter(PersonProfile::getIsActive)
+                .map(this::converToProfileDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
