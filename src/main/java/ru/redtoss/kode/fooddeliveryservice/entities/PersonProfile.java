@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @RequiredArgsConstructor
-@Table(name = "PERSONPROFILE")
-public class PersonProfile {
+@Table(name = "PERSON_PROFILE")
+public class PersonProfile{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,7 +2,6 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.redtoss.kode.fooddeliveryservice.entities.Courier;
 import ru.redtoss.kode.fooddeliveryservice.entities.FoodOrder;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CourierRepository;
@@ -19,7 +18,6 @@ public class CouriersService {
     }
 
 
-    @Transactional
     public void assignOrderToCourier(int courier_id, FoodOrder foodOrder) {
         Optional<Courier> optionalCourier = courierRepository.findById(courier_id);
         if (optionalCourier.isPresent()) {

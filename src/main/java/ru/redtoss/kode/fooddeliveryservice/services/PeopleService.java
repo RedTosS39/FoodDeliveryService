@@ -12,6 +12,7 @@ import ru.redtoss.kode.fooddeliveryservice.models.Status;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CourierRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
+import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
-
 public class PeopleService {
     private final PersonRepository personRepository;
     private final ProfileRepository profileRepository;
@@ -36,17 +36,20 @@ public class PeopleService {
     }
 
     public List<PersonProfile> findAllPeople(Role role) {
-        return profileRepository.findAll().stream().filter(it -> it.getRole() == role && it.getIsActive()).collect(Collectors.toCollection(ArrayList::new));
+        return profileRepository.findAll()
+                .stream()
+                .filter(it -> it.getRole() == role && it.getIsActive())
+                .collect(Collectors.toList());
     }
 
-
     public Optional<PersonProfile> findProfileById(int id) {
-        return profileRepository.findById(id);
+        Optional<PersonProfile> profile = profileRepository.findById(id);
+        return Optional.ofNullable(profile.orElseThrow(PersonNotFoundException::new));
     }
 
     @Transactional
     public void createPerson(Person person) {
-        PersonProfile profile = createUserProfile(person.getUserName(), Role.BUYER);
+        PersonProfile profile = createUserProfile(person.getName(), Role.BUYER);
         profile.setPerson(person);
         profile.setStatus(null);
         profileRepository.save(profile);
@@ -97,5 +100,10 @@ public class PeopleService {
         for (PersonProfile profile : profiles) {
             System.out.println(profile + "is Active: " + profile.getIsActive());
         }
+    }
+
+
+    private void enrichProfileDTO(PersonProfile profile) {
+        profile.setUpdatedDate(LocalDateTime.now());
     }
 }

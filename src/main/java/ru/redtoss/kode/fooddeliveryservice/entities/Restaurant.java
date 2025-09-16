@@ -20,9 +20,9 @@ public class Restaurant {
     private String name;
 
 
-    @OneToOne
-    @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
-    private Menu menu;
+
+
+//    private FoodMenu menu;
 
     @Column(name = "isActive")
     private Boolean isActive;

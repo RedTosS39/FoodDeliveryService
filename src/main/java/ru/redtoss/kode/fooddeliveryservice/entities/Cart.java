@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "Cart")
+@Table(name = "Food_Cart")
 public class Cart {
 
     @Id
@@ -18,10 +18,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PERSON_PROFILE_ID", referencedColumnName = "ID")
     private PersonProfile personProfile;
 
-    @OneToMany
-    private List<Dish> dishes;
+
+    @OneToMany(mappedBy = "cart")
+    private List<FoodDish> foodDishes;
 }

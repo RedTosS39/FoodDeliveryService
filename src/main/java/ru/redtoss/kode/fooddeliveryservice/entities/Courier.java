@@ -4,16 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import ru.redtoss.kode.fooddeliveryservice.models.Status;
-
-import java.util.List;
 
 @Getter
 @Entity
 @RequiredArgsConstructor
+@Table(name = "COURIER")
 public class Courier {
 
     @Setter
@@ -30,6 +27,11 @@ public class Courier {
 
     @OneToOne(mappedBy = "courier")
     private PersonProfile personProfile;
+
+
+    public PersonProfile getProfile() {
+        return personProfile;
+    }
 
     @Setter
     @OneToOne(mappedBy = "courier")
@@ -48,8 +50,7 @@ public class Courier {
         return this.orderCount;
     }
 
-
-    public void setPersonProfile(PersonProfile personProfile) {
+    public void setProfile(PersonProfile personProfile) {
         if (personProfile != null) {
             personProfile.setCourier(this);
         }
