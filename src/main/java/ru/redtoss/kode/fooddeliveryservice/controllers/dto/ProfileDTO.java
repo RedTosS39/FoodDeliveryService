@@ -1,7 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.controllers.dto;
 
 
-import jakarta.persistence.Column;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
@@ -13,6 +12,26 @@ public class ProfileDTO {
     private String name;
 
     private Role role;
+
+    private Status status;
+
+    private Boolean isActive;
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime updatedDate;

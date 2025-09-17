@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.PersonDTO;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
+import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileUpdater;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
@@ -17,13 +17,12 @@ import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/users")
 @ResponseBody
-public class ProfileAPIController  implements ShowErrorMessage, ConvertEntity {
+public class ProfileAPIController implements ShowErrorMessage, ConvertEntity {
 
     private final PeopleService peopleService;
 
@@ -35,19 +34,22 @@ public class ProfileAPIController  implements ShowErrorMessage, ConvertEntity {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProfileDTO> findAll() {
-        return peopleService.findAllPeople(Role.BUYER).stream()
-                .filter(PersonProfile::getIsActive)
-                .map(this::converToProfileDTO).collect(Collectors.toList());
+        return peopleService.findAllPeople(Role.BUYER);
     }
 
     @GetMapping("/{id}")
     public ProfileDTO getPerson(@PathVariable int id) {
-        return converToProfileDTO(peopleService.findProfileById(id).orElseThrow(PersonNotFoundException::new));
+        return peopleService.findProfileById(id);
     }
 
     @GetMapping("/")
     public List<ProfileDTO> getPersonByRole(@RequestParam Role role) {
-        return peopleService.findAllPeople(role).stream().map(this::converToProfileDTO).collect(Collectors.toList());
+        return peopleService.findAllPeople(role);
+    }
+
+    @PutMapping("/{id}")
+    public void update(@PathVariable int id, @RequestBody @Valid PersonDTO profileDTO) {
+        peopleService.update(id, profileDTO);
     }
 
     @PostMapping
@@ -56,13 +58,8 @@ public class ProfileAPIController  implements ShowErrorMessage, ConvertEntity {
             String errorMsg = showErrorMessage(bindingResult);
             throw new PersonNotCreatedException(errorMsg);
         }
-        peopleService.createPerson(convertToPerson(personDTO));
+        peopleService.createPerson(personDTO, Role.BUYER);
         return new ResponseEntity<>(HttpStatus.CREATED, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
-    public void updateProfile(@PathVariable int id, @RequestBody @Valid ProfileDTO profileDTO) {
-        peopleService.updatePersonProfile(id, convertToPersonProfile(profileDTO));
     }
 
     @DeleteMapping("/{id}")
