@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.CourierDTO;
 import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
+import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileUpdater;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
@@ -17,11 +17,10 @@ import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/couriers")
-public class CourierAPIController implements ShowErrorMessage, ConvertEntity {
+public class CourierAPIController implements ShowErrorMessage {
 
     private final PeopleService peopleService;
 
@@ -33,19 +32,17 @@ public class CourierAPIController implements ShowErrorMessage, ConvertEntity {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProfileDTO> findAll() {
-        return peopleService.findAllPeople(Role.COURIER).stream().
-                filter(PersonProfile::getIsActive).
-                map(this::converToProfileDTO).collect(Collectors.toList());
+        return peopleService.findAllPeople(Role.COURIER);
     }
 
     @GetMapping("/{id}")
     public ProfileDTO getCourierDTO(@PathVariable int id) {
-        return converToProfileDTO(peopleService.findProfileById(id).orElseThrow(PersonNotFoundException::new));
+        return peopleService.findProfileById(id);
     }
 
     @GetMapping("/")
-    public List<ProfileDTO> getPersonByRole(@RequestParam Role role) {
-        return peopleService.findAllPeople(role).stream().map(this::converToProfileDTO).collect(Collectors.toList());
+    public List<ProfileDTO> getPersonByRole(@RequestParam(value = "role") Role role) {
+        return peopleService.findAllPeople(role);
     }
 
     @PostMapping
@@ -54,17 +51,17 @@ public class CourierAPIController implements ShowErrorMessage, ConvertEntity {
             String message = showErrorMessage(bindingResult);
             throw new PersonNotCreatedException(message);
         }
-        peopleService.createCourier(converToCourier(courierDTO));
+        peopleService.createCourier(courierDTO, Role.COURIER);
         return new ResponseEntity<>(HttpStatus.CREATED, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public void updateProfile(@PathVariable int id, @RequestBody @Valid CourierDTO courierDTO) {
-        peopleService.updatePersonProfile(id, convertToPersonProfile(courierDTO));
+    public void update(@PathVariable int id, @RequestBody @Valid CourierDTO courierDTO) {
+        peopleService.update(id, courierDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void setActiveProfile(@PathVariable int id) {
+    public void delete(@PathVariable int id) {
         peopleService.deletePersonProfile(id);
     }
 

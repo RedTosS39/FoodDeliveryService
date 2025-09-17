@@ -53,7 +53,7 @@ public class PersonProfile{
 
     @Setter
     @Column(name = "isActive")
-    private Boolean isActive = true;
+    private Boolean isActive;
 
     @OneToOne(mappedBy = "personProfile")
     private Cart cart;

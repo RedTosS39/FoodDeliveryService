@@ -53,7 +53,8 @@ public class Courier {
     public void setProfile(PersonProfile personProfile) {
         if (personProfile != null) {
             personProfile.setCourier(this);
+        } else {
+            this.personProfile = personProfile;
         }
-        this.personProfile = personProfile;
     }
 }
