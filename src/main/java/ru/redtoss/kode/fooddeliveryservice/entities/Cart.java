@@ -2,14 +2,12 @@ package ru.redtoss.kode.fooddeliveryservice.entities;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
-@Getter
+
 @Table(name = "Food_Cart")
 public class Cart {
 
@@ -22,7 +20,30 @@ public class Cart {
     @JoinColumn(name = "PERSON_PROFILE_ID", referencedColumnName = "ID")
     private PersonProfile personProfile;
 
-
     @OneToMany(mappedBy = "cart")
     private List<FoodDish> foodDishes;
+
+    public int getId() {
+        return id;
+    }
+
+    public PersonProfile getPersonProfile() {
+        return personProfile;
+    }
+
+    public List<FoodDish> getFoodDishes() {
+        return foodDishes;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setPersonProfile(PersonProfile personProfile) {
+        this.personProfile = personProfile;
+    }
+
+    public void setFoodDishes(List<FoodDish> foodDishes) {
+        this.foodDishes = foodDishes;
+    }
 }

@@ -7,9 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.CourierDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileUpdater;
+import ru.redtoss.kode.fooddeliveryservice.dto.CourierDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
@@ -68,11 +67,10 @@ public class CourierAPIController implements ShowErrorMessage {
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleException(PersonNotFoundException error) {
         ErrorResponse response = new ErrorResponse(
-                "User with id wasn't found",
+                error.getMessage() + " person with id not found",
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
-
 }
 

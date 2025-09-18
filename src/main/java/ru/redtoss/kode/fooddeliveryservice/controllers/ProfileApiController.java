@@ -7,10 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.PersonDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileUpdater;
+import ru.redtoss.kode.fooddeliveryservice.dto.PersonDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
+import ru.redtoss.kode.fooddeliveryservice.services.ConvertEntity;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
@@ -22,12 +22,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @ResponseBody
-public class ProfileAPIController implements ShowErrorMessage, ConvertEntity {
+public class ProfileApiController implements ShowErrorMessage, ConvertEntity {
 
     private final PeopleService peopleService;
 
     @Autowired
-    public ProfileAPIController(PeopleService peopleService) {
+    public ProfileApiController(PeopleService peopleService) {
         this.peopleService = peopleService;
     }
 
@@ -48,8 +48,9 @@ public class ProfileAPIController implements ShowErrorMessage, ConvertEntity {
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable int id, @RequestBody @Valid PersonDTO profileDTO) {
+    public ResponseEntity<HttpStatus> update(@PathVariable int id, @RequestBody @Valid PersonDTO profileDTO) {
         peopleService.update(id, profileDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
@@ -63,8 +64,9 @@ public class ProfileAPIController implements ShowErrorMessage, ConvertEntity {
     }
 
     @DeleteMapping("/{id}")
-    public void setActiveProfile(@PathVariable int id) {
+    public ResponseEntity<HttpStatus> setActiveProfile(@PathVariable int id) {
         peopleService.deletePersonProfile(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ExceptionHandler
@@ -75,5 +77,4 @@ public class ProfileAPIController implements ShowErrorMessage, ConvertEntity {
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
-
 }

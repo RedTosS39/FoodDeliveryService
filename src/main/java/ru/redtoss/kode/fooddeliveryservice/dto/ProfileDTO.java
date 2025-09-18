@@ -1,7 +1,8 @@
-package ru.redtoss.kode.fooddeliveryservice.controllers.dto;
+package ru.redtoss.kode.fooddeliveryservice.dto;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
+import ru.redtoss.kode.fooddeliveryservice.entities.Restaurant;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
 
@@ -16,6 +17,16 @@ public class ProfileDTO {
     private Status status;
 
     private Boolean isActive;
+
+    private Restaurant restaurant;
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
 
     public Boolean getActive() {
         return isActive;

@@ -30,7 +30,6 @@ public class OrdersService {
         this.courierRepository = courierRepository;
     }
 
-
     public List<FoodOrder> findOrders() {
         return orderRepository.findAll();
     }
@@ -40,7 +39,7 @@ public class OrdersService {
     return     orderRepository.findById(id);
     }
 
-    public void placeAnOrder(int person_id, int order_id) {
+    public void assignOrder(int person_id, int order_id) {
         Optional<Person> optionalPerson = personRepository.findById(person_id);
         Optional<FoodOrder> optionalFoodOrder = orderRepository.findById(order_id);
         if (optionalPerson.isPresent() && optionalFoodOrder.isPresent()) {
@@ -51,7 +50,4 @@ public class OrdersService {
             person.setFoodOrder(list);
         }
     }
-
-
-
 }

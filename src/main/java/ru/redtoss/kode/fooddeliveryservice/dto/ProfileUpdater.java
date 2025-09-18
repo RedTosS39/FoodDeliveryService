@@ -1,4 +1,4 @@
-package ru.redtoss.kode.fooddeliveryservice.controllers.dto;
+package ru.redtoss.kode.fooddeliveryservice.dto;
 
 public interface ProfileUpdater {
     String getName();
