@@ -3,17 +3,13 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.redtoss.kode.fooddeliveryservice.controllers.ConvertEntity;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.CourierDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.PersonDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.controllers.dto.ProfileUpdater;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileUpdater;
 import ru.redtoss.kode.fooddeliveryservice.entities.Courier;
 import ru.redtoss.kode.fooddeliveryservice.entities.Person;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
-import ru.redtoss.kode.fooddeliveryservice.repositories.CourierRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
@@ -28,13 +24,11 @@ import java.util.stream.Collectors;
 public class PeopleService implements ConvertEntity {
     private final PersonRepository personRepository;
     private final ProfileRepository profileRepository;
-    private final CourierRepository courierRepository;
 
     @Autowired
-    public PeopleService(PersonRepository personRepository, ProfileRepository profileRepository, CourierRepository courierRepository) {
+    public PeopleService(PersonRepository personRepository, ProfileRepository profileRepository) {
         this.personRepository = personRepository;
         this.profileRepository = profileRepository;
-        this.courierRepository = courierRepository;
     }
 
     public List<ProfileDTO> findAllPeople(Role role) {

@@ -19,7 +19,7 @@ public class FoodDish {
     private String dishName;
 
     @Column(name = "price")
-    private int price;
+    private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
@@ -30,6 +30,53 @@ public class FoodDish {
     @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
     private FoodMenu foodMenu;
 
+    public FoodMenu getFoodMenu() {
+        return foodMenu;
+    }
 
+    public void setFoodMenu(FoodMenu foodMenu) {
+        this.foodMenu = foodMenu;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getDishName() {
+        return dishName;
+    }
+
+    public void setDishName(String dishName) {
+        this.dishName = dishName;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    @Override
+    public String toString() {
+        return "FoodDish{" +
+               "id=" + id +
+               ", dishName='" + dishName + '\'' +
+               ", price=" + price +
+               '}';
+    }
 }
 

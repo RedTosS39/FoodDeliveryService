@@ -1,20 +1,20 @@
 package ru.redtoss.kode.fooddeliveryservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.redtoss.kode.fooddeliveryservice.services.OrdersService;
 
-@Controller
+@RestController
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderApiController {
 
     private final OrdersService ordersService;
 
     @Autowired
-    public OrderController(OrdersService ordersService) {
+    public OrderApiController(OrdersService ordersService) {
         this.ordersService = ordersService;
     }
 
