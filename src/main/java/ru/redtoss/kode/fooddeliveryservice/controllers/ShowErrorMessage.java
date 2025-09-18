@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface ShowErrorMessage {
 
-    @ExceptionHandler
     default String showErrorMessage(BindingResult bindingResult) {
         StringBuilder errorsMsg = new StringBuilder();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();

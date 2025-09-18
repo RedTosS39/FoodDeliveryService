@@ -52,7 +52,7 @@ public class PersonProfile{
     private Status status;
 
     @Setter
-    @Column(name = "isActive")
+    @Column(name = "is_active")
     private Boolean isActive;
 
     @OneToOne(mappedBy = "personProfile")

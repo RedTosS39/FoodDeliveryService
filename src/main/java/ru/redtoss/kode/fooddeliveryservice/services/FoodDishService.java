@@ -30,19 +30,11 @@ public class FoodDishService implements ConvertEntity {
     public List<FoodDishDTO> findAll(int id) {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
         if (optionalRestaurant.isPresent()) {
-            Restaurant restaurant = optionalRestaurant.get();
-            return restaurant.getMenu().getDishes().stream().map(this::convertToFoodDishDTO).toList();
+            return optionalRestaurant.get().getMenu().getDishes().stream()
+                    .filter(FoodDish::getIsAvailable)
+                    .map(this::convertToFoodDishDTO).toList();
         } else {
             throw new RestaurantNotFoundException();
-        }
-    }
-
-    public FoodDishDTO findById(int id) {
-        Optional<FoodDish> foodDish = foodDishRepository.findById(id);
-        if (foodDish.isPresent()) {
-            return convertToFoodDishDTO(foodDish.get());
-        } else {
-            throw new DishNotFoundException("Dish with id " + id + " not found");
         }
     }
 
@@ -56,5 +48,15 @@ public class FoodDishService implements ConvertEntity {
         }
     }
 
-
+    @Transactional
+    public void delete(int id) {
+        Optional<FoodDish> optionalFoodDish = foodDishRepository.findById(id);
+        if (optionalFoodDish.isPresent()) {
+            FoodDish foodDish = optionalFoodDish.get();
+            foodDish.setAvailable(false);
+            foodDishRepository.save(foodDish);
+        } else {
+            throw new DishNotFoundException("Dish with id " + id + " not found");
+        }
+    }
 }

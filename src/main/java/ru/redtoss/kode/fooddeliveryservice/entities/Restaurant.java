@@ -36,14 +36,26 @@ public class Restaurant {
         return rating;
     }
 
-    @Column(name = "isActive")
+    @Column(name = "IS_ACTIVE")
     private Boolean isActive;
 
     @OneToOne(mappedBy = "restaurant")
     private FoodMenu menu;
 
+    @OneToOne(mappedBy = "restaurant")
+    private Cart cart;
+
+
 
     public Restaurant() {
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
     public FoodMenu getMenu() {
