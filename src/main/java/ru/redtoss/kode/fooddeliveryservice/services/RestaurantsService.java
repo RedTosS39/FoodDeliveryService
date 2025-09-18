@@ -53,27 +53,13 @@ public class RestaurantsService implements ConvertEntity {
         Restaurant restaurant = convertToRestaurant(restaurantDTO);
         restaurant.setName(restaurantDTO.getName());
         restaurant.setActive(true);
-        restaurantRepository.save(restaurant);
-    }
-
-
-
-    @Transactional
-    public void createMenu(int id, FoodMenuDTO foodMenuDTO) {
         Hibernate.initialize(Restaurant.class);
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        FoodMenu foodMenu = convertToFoodMenu(foodMenuDTO);
 
-        if (restaurant.isPresent()) {
-            Restaurant rest = restaurant.get();
-            foodMenu.setRestaurant(rest);
-            rest.setId(restaurant.get().getId());
-            rest.setMenu(foodMenu);
-            restaurantRepository.save(rest);
-            foodMenuRepository.save(foodMenu);
-        } else {
-            throw new MenuNotCreatedException();
-        }
+        FoodMenu foodMenu = new FoodMenu();
+        restaurant.setMenu(foodMenu);
+        foodMenu.setRestaurant(restaurant);
+        foodMenuRepository.save(foodMenu);
+        restaurantRepository.save(restaurant);
     }
 
     @Transactional
@@ -83,10 +69,13 @@ public class RestaurantsService implements ConvertEntity {
         if (optionalFoodMenu.isPresent()) {
             FoodMenu foodMenu = optionalFoodMenu.get();
             dish.setFoodMenu(foodMenu);
+            dish.setAvailable(true);
             dish.setPrice(dishDTO.getDishPrice());
             foodMenu.getDishes().add(dish);
 
             foodDishRepository.save(dish);
+            foodMenuRepository.save(foodMenu);
+
             System.out.println("Menu: " + foodMenu.getDishes());
             System.out.println("Dish: " + dish);
         } else {

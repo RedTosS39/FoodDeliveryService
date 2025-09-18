@@ -35,16 +35,16 @@ public class DishApiController implements ShowErrorMessage {
     @PostMapping()
     public ResponseEntity<HttpStatus> createDish(@PathVariable int id,
                                                  @RequestBody @Valid FoodDishDTO foodDishDTO,
-                                                 @RequestParam(name = "dish_name", required = false) String name,
-                                                 @RequestParam(name = "dishPrice", required = false) Integer price,
+                                                 @RequestParam(name = "dishName", required = false) String dishName,
+                                                 @RequestParam(name = "dishPrice", required = false) Integer dishPrice,
                                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = showErrorMessage(bindingResult);
             throw new DishNotCreatedException(errorMsg);
         }
 
-        if (price != null) {
-            foodDishDTO.setDishPrice(price);
+        if (dishPrice != null) {
+            foodDishDTO.setDishPrice(dishPrice);
         }
 
         restaurantsService.createDish(id, foodDishDTO);
@@ -63,6 +63,14 @@ public class DishApiController implements ShowErrorMessage {
         foodDishService.update(id, foodDishDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/{menu_id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable int id,
+                                             @PathVariable int menu_id) {
+        foodDishService.delete(menu_id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse> handleException(DishNotFoundException error) {

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class FoodDish {
 
     @Id
-    @Column(name = "id", insertable=false, updatable=false)
+    @Column(name = "id", insertable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -21,10 +21,19 @@ public class FoodDish {
     @Column(name = "price")
     private Integer price;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "FOOD_CART_ID", referencedColumnName = "ID")
     private Cart cart;
 
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
@@ -62,12 +71,16 @@ public class FoodDish {
         this.price = price;
     }
 
-    public Cart getCart() {
-        return cart;
+
+    @Column(name = "is_available")
+    private Boolean isAvailable;
+
+    public Boolean getAvailable() {
+        return isAvailable;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
     }
 
     @Override

@@ -3,6 +3,7 @@ package ru.redtoss.kode.fooddeliveryservice.entities;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Entity
@@ -20,8 +21,29 @@ public class Cart {
     @JoinColumn(name = "PERSON_PROFILE_ID", referencedColumnName = "ID")
     private PersonProfile personProfile;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Restaurant restaurant;
+
     @OneToMany(mappedBy = "cart")
     private List<FoodDish> foodDishes;
+
+
+
+    public List<FoodDish> getFoodDishes() {
+        return foodDishes;
+    }
+
+    public void setFoodDishes(List<FoodDish> foodDishes) {
+        this.foodDishes = foodDishes;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
 
     public int getId() {
         return id;
@@ -29,10 +51,6 @@ public class Cart {
 
     public PersonProfile getPersonProfile() {
         return personProfile;
-    }
-
-    public List<FoodDish> getFoodDishes() {
-        return foodDishes;
     }
 
     public void setId(int id) {
@@ -43,7 +61,13 @@ public class Cart {
         this.personProfile = personProfile;
     }
 
-    public void setFoodDishes(List<FoodDish> foodDishes) {
-        this.foodDishes = foodDishes;
+
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+               "id=" + id +
+               ", personProfile=" + personProfile +
+               '}';
     }
 }

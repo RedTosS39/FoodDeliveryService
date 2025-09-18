@@ -1,20 +1,21 @@
 package ru.redtoss.kode.fooddeliveryservice.services;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileUpdater;
-import ru.redtoss.kode.fooddeliveryservice.entities.Courier;
-import ru.redtoss.kode.fooddeliveryservice.entities.Person;
-import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
+import ru.redtoss.kode.fooddeliveryservice.entities.*;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
+import ru.redtoss.kode.fooddeliveryservice.repositories.CartRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,11 +25,15 @@ import java.util.stream.Collectors;
 public class PeopleService implements ConvertEntity {
     private final PersonRepository personRepository;
     private final ProfileRepository profileRepository;
+    private final CartRepository cartRepository;
 
     @Autowired
-    public PeopleService(PersonRepository personRepository, ProfileRepository profileRepository) {
+    public PeopleService(PersonRepository personRepository,
+                         ProfileRepository profileRepository,
+                         CartRepository cartRepository) {
         this.personRepository = personRepository;
         this.profileRepository = profileRepository;
+        this.cartRepository = cartRepository;
     }
 
     public List<ProfileDTO> findAllPeople(Role role) {
@@ -53,9 +58,20 @@ public class PeopleService implements ConvertEntity {
     public void createPerson(ProfileUpdater personDTO, Role role) {
         Person person = convertToPerson(personDTO);
         PersonProfile profile = createUserProfile(person.getName(), role);
+
         profile.setPerson(person);
         profile.setStatus(null);
         profile.setIsActive(true);
+
+        Hibernate.initialize(Cart.class);
+        Cart cart = new Cart();
+        cart.setPersonProfile(profile);
+        List<FoodDish> dishes = new ArrayList<>();
+        cart.setFoodDishes(dishes);
+
+        profile.setCart(cart);
+        cartRepository.save(cart);
+
         profileRepository.save(profile);
         personRepository.save(person);
     }
@@ -94,10 +110,12 @@ public class PeopleService implements ConvertEntity {
     }
 
     private PersonProfile createUserProfile(String name, Role role) {
+
         PersonProfile profile = new PersonProfile();
         profile.setName(name);
         profile.setRole(role);
         profile.setUpdatedDate(LocalDateTime.now());
+
         return profile;
     }
 }
