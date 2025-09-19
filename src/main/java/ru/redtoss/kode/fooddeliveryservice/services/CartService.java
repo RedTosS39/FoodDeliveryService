@@ -16,6 +16,7 @@ import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.RestaurantRepository;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
 
 import java.util.List;
@@ -89,9 +90,12 @@ public class CartService implements ConvertEntity {
     public void addDishToCart(int restaurantId, int dishId, int userId) {
         Hibernate.initialize(Restaurant.class);
         Hibernate.initialize(PersonProfile.class);
+
+
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
         Optional<FoodDish> optionalFoodDish = foodDishRepository.findById(dishId);
         Optional<PersonProfile> personProfileOptional = profileRepository.findById(userId);
+
 
         if (optionalFoodDish.isPresent() && personProfileOptional.isPresent() && optionalRestaurant.isPresent()) {
 
@@ -99,8 +103,11 @@ public class CartService implements ConvertEntity {
             FoodDish foodDish = optionalFoodDish.get();
             PersonProfile person = personProfileOptional.get();
 
-            if (restaurant.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId)) {
+            if (!restaurant.getActive()) {
+                throw new RestaurantNotCreatedException("Restaurant is close");
+            }
 
+            if (restaurant.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId)) {
                 Optional<FoodDish> currentDish = person.getCart()
                         .getFoodDishes()
                         .stream()
@@ -119,11 +126,9 @@ public class CartService implements ConvertEntity {
                 }
 
                 cartRepository.save(person.getCart());
-                person.getCart().getFoodDishes().forEach(it -> System.out.println(it.getDishName() + " " + it.getQuantity() + " "));
             } else {
                 throw new DishNotFoundException("Dish not found");
             }
-
         } else {
             throw new RestaurantNotFoundException();
         }

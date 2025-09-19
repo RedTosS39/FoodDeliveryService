@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodMenuDTO;
 import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDTO;
 import ru.redtoss.kode.fooddeliveryservice.entities.FoodDish;
 import ru.redtoss.kode.fooddeliveryservice.entities.FoodMenu;
@@ -78,12 +77,8 @@ public class RestaurantsService implements ConvertEntity {
                 dish.setQuantity(dishDTO.getDishQuantity());
                 foodMenu.getDishes().add(dish);
             }
-
             foodDishRepository.save(dish);
             foodMenuRepository.save(foodMenu);
-
-            System.out.println("Menu: " + foodMenu.getDishes().get(0).getQuantity());
-            System.out.println("Dish: " + dish + " " + dish.getQuantity());
         } else {
             throw new MenuNotCreatedException();
         }

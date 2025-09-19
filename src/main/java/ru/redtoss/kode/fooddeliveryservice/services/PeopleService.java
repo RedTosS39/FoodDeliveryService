@@ -41,7 +41,7 @@ public class PeopleService implements ConvertEntity {
         return profileRepository.findAll()
                 .stream()
                 .filter(it -> it.getRole() == role
-                              && it.getIsActive())
+                              && it.getActive())
                 .map(this::converToProfileDTO)
                 .collect(Collectors.toList());
     }
@@ -118,4 +118,7 @@ public class PeopleService implements ConvertEntity {
 
         return profile;
     }
+
+
+
 }

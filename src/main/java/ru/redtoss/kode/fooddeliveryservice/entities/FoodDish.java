@@ -1,12 +1,10 @@
 package ru.redtoss.kode.fooddeliveryservice.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Food_Dish")
-@Getter
 @NoArgsConstructor
 public class FoodDish {
 
@@ -26,10 +24,29 @@ public class FoodDish {
     @JoinColumn(name = "FOOD_CART_ID", referencedColumnName = "ID")
     private Cart cart;
 
-    @Column(name="QUANTITY")
+    @Column(name = "QUANTITY")
     private int quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
 
+    private FoodMenu foodMenu;
+
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "FOOD_ORDER", referencedColumnName = "ID")
+    private FoodOrder foodOrder;
+
+    @Column(name = "is_available")
+    private Boolean isAvailable;
+
+    public FoodOrder getFoodOrder() {
+        return foodOrder;
+    }
+
+    public void setFoodOrder(FoodOrder foodOrder) {
+        this.foodOrder = foodOrder;
+    }
 
     public int getQuantity() {
         return quantity;
@@ -46,10 +63,6 @@ public class FoodDish {
     public void setCart(Cart cart) {
         this.cart = cart;
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
-    private FoodMenu foodMenu;
 
     public FoodMenu getFoodMenu() {
         return foodMenu;
@@ -83,9 +96,6 @@ public class FoodDish {
         this.price = price;
     }
 
-
-    @Column(name = "is_available")
-    private Boolean isAvailable;
 
     public Boolean getAvailable() {
         return isAvailable;

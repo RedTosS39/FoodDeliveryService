@@ -40,7 +40,6 @@ public class Cart {
     }
 
     public int getSum() {
-
         return sum;
     }
 
