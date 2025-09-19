@@ -31,9 +31,6 @@ public class Person {
     @OneToOne(mappedBy = "person")
     private PersonProfile profile;
 
-    @Setter
-    @OneToMany(mappedBy = "people")
-    private List<FoodOrder> foodOrder;
 
 
     public void setProfile(PersonProfile profile) {

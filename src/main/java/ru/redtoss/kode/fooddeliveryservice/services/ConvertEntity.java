@@ -56,4 +56,12 @@ public interface ConvertEntity {
 
         return modelMapper.map(cart, CartDTO.class);
     }
+
+    default FoodOrderDTO convertToFoodOrderDTO(FoodOrder foodOrder) {
+        return modelMapper.map(foodOrder, FoodOrderDTO.class);
+    }
+
+    default FoodOrder convertToFoodOrder(FoodOrderDTO foodOrderDTO) {
+        return modelMapper.map(foodOrderDTO, FoodOrder.class);
+    }
 }

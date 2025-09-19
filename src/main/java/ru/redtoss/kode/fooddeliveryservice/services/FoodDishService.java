@@ -31,7 +31,7 @@ public class FoodDishService implements ConvertEntity {
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
         if (optionalRestaurant.isPresent()) {
             return optionalRestaurant.get().getMenu().getDishes().stream()
-                    .filter(FoodDish::getIsAvailable)
+                    .filter(FoodDish::getAvailable)
                     .map(this::convertToFoodDishDTO).toList();
         } else {
             throw new RestaurantNotFoundException();

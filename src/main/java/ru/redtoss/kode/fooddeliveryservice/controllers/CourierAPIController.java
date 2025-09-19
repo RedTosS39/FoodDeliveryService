@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.CourierDTO;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
+import ru.redtoss.kode.fooddeliveryservice.services.CouriersService;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
 import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
@@ -22,10 +23,13 @@ import java.util.List;
 public class CourierAPIController implements ShowErrorMessage {
 
     private final PeopleService peopleService;
+    private final CouriersService couriersService;
+
 
     @Autowired
-    public CourierAPIController(PeopleService peopleService) {
+    public CourierAPIController(PeopleService peopleService, CouriersService couriersService) {
         this.peopleService = peopleService;
+        this.couriersService = couriersService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,6 +66,13 @@ public class CourierAPIController implements ShowErrorMessage {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
         peopleService.deletePersonProfile(id);
+    }
+
+
+    @PatchMapping("/{id}/assign")
+    public ResponseEntity<HttpStatus> assignOrderToCourier(@PathVariable int id, @RequestParam int orderId) {
+        couriersService.assignOrderToCourier(id, orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ExceptionHandler

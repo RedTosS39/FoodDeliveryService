@@ -3,7 +3,7 @@ package ru.redtoss.kode.fooddeliveryservice.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,9 +11,8 @@ import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Setter
-@Getter
 
 @Entity
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 public class PersonProfile{
 
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
@@ -58,6 +58,80 @@ public class PersonProfile{
     @OneToOne(mappedBy = "personProfile", cascade = CascadeType.ALL)
     private Cart cart;
 
+    @OneToMany(mappedBy = "people", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodOrder> foodOrderList;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public @NotNull(message = "Enter the username") @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов") String getName() {
+        return name;
+    }
+
+    public void setName(@NotNull(message = "Enter the username") @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов") String name) {
+        this.name = name;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public List<FoodOrder> getFoodOrderList() {
+        return foodOrderList;
+    }
+
+    public void setFoodOrderList(List<FoodOrder> foodOrderList) {
+        this.foodOrderList = foodOrderList;
+    }
 
     @Override
     public String toString() {
