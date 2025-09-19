@@ -11,7 +11,7 @@ import ru.redtoss.kode.fooddeliveryservice.dto.CourierDTO;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
-import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
+import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
@@ -65,8 +65,8 @@ public class CourierAPIController implements ShowErrorMessage {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(PersonNotFoundException error) {
-        ErrorResponse response = new ErrorResponse(
+    private ResponseEntity<DefaultErrorResponse> handleException(PersonNotFoundException error) {
+        DefaultErrorResponse response = new DefaultErrorResponse(
                 error.getMessage() + " person with id not found",
                 System.currentTimeMillis()
         );

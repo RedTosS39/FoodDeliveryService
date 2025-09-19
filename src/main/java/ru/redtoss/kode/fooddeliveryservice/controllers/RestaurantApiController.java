@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
-import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
+import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
 
@@ -73,8 +73,8 @@ public class RestaurantApiController implements ShowErrorMessage {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(RestaurantNotFoundException error) {
-        ErrorResponse response = new ErrorResponse(
+    private ResponseEntity<DefaultErrorResponse> handleException(RestaurantNotFoundException error) {
+        DefaultErrorResponse response = new DefaultErrorResponse(
                 error.getMessage() + " Restaurant with id not found",
                 System.currentTimeMillis()
         );

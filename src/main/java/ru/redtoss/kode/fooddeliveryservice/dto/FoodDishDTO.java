@@ -10,6 +10,30 @@ public class FoodDishDTO {
     @Min(value = 1)
     private Integer dishPrice;
 
+    private int dishQuantity;
+
+    private int sum;
+
+    public void setDishQuantity(int dishQuantity) {
+        this.dishQuantity = dishQuantity;
+    }
+
+    public int getSum() {
+        return dishPrice * dishQuantity;
+    }
+
+    public void setSum(int sum) {
+        this.sum = sum;
+    }
+
+    public Integer getDishQuantity() {
+        return dishQuantity;
+    }
+
+    public void setDishQuantity(@Min(value = 1) Integer dishQuantity) {
+        this.dishQuantity = dishQuantity;
+    }
+
     public String getDishName() {
         return dishName;
     }

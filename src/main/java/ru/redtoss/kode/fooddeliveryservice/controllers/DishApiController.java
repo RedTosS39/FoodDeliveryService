@@ -11,7 +11,7 @@ import ru.redtoss.kode.fooddeliveryservice.services.FoodDishService;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
+import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 
 import java.util.List;
 
@@ -37,15 +37,17 @@ public class DishApiController implements ShowErrorMessage {
                                                  @RequestBody @Valid FoodDishDTO foodDishDTO,
                                                  @RequestParam(name = "dishName", required = false) String dishName,
                                                  @RequestParam(name = "dishPrice", required = false) Integer dishPrice,
+                                                 @RequestParam(name = "quantity", required = false) Integer quantity,
                                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = showErrorMessage(bindingResult);
             throw new DishNotCreatedException(errorMsg);
         }
 
-        if (dishPrice != null) {
-            foodDishDTO.setDishPrice(dishPrice);
-        }
+        if (quantity != null)
+            foodDishDTO.setDishQuantity(quantity);
+        else
+            foodDishDTO.setDishQuantity(1);
 
         restaurantsService.createDish(id, foodDishDTO);
         return new ResponseEntity<>(HttpStatus.CREATED, HttpStatus.OK);
@@ -73,8 +75,8 @@ public class DishApiController implements ShowErrorMessage {
 
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(DishNotFoundException error) {
-        ErrorResponse response = new ErrorResponse(
+    private ResponseEntity<DefaultErrorResponse> handleException(DishNotFoundException error) {
+        DefaultErrorResponse response = new DefaultErrorResponse(
                 error.getMessage() + " dish with id not found",
                 System.currentTimeMillis()
         );

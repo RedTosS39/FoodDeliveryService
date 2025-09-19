@@ -1,10 +1,10 @@
 package ru.redtoss.kode.fooddeliveryservice.utils;
 
-public class ErrorResponse {
+public class DefaultErrorResponse {
     private String message;
     private long timestamp;
 
-    public ErrorResponse(String message, long timestamp) {
+    public DefaultErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

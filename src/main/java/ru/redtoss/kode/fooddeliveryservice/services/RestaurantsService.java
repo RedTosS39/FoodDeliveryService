@@ -68,16 +68,22 @@ public class RestaurantsService implements ConvertEntity {
         Optional<FoodMenu> optionalFoodMenu = foodMenuRepository.findById(id);
         if (optionalFoodMenu.isPresent()) {
             FoodMenu foodMenu = optionalFoodMenu.get();
-            dish.setFoodMenu(foodMenu);
-            dish.setAvailable(true);
-            dish.setPrice(dishDTO.getDishPrice());
-            foodMenu.getDishes().add(dish);
+            if (foodMenu.getDishes().stream()
+                    .anyMatch(it -> it.getDishName().equals(dishDTO.getDishName()))) {
+                dish.setQuantity(dishDTO.getDishQuantity());
+            } else {
+                dish.setFoodMenu(foodMenu);
+                dish.setAvailable(true);
+                dish.setPrice(dishDTO.getDishPrice());
+                dish.setQuantity(dishDTO.getDishQuantity());
+                foodMenu.getDishes().add(dish);
+            }
 
             foodDishRepository.save(dish);
             foodMenuRepository.save(foodMenu);
 
-            System.out.println("Menu: " + foodMenu.getDishes());
-            System.out.println("Dish: " + dish);
+            System.out.println("Menu: " + foodMenu.getDishes().get(0).getQuantity());
+            System.out.println("Dish: " + dish + " " + dish.getQuantity());
         } else {
             throw new MenuNotCreatedException();
         }
