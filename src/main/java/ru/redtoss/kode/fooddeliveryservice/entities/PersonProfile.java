@@ -55,7 +55,7 @@ public class PersonProfile{
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "personProfile")
+    @OneToOne(mappedBy = "personProfile", cascade = CascadeType.ALL)
     private Cart cart;
 
 

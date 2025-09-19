@@ -22,10 +22,22 @@ public class FoodDish {
     private Integer price;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FOOD_CART_ID", referencedColumnName = "ID")
     private Cart cart;
 
+    @Column(name="QUANTITY")
+    private int quantity;
+
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public Cart getCart() {
         return cart;

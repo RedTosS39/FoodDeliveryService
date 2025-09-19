@@ -1,35 +1,24 @@
 package ru.redtoss.kode.fooddeliveryservice.dto;
 
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodDish;
-
-import java.util.Map;
+import java.util.List;
 
 public class CartDTO {
-    private String dishName;
-    private int dishPrice;
-    private int dishQuantity;
+    private final List<FoodDishDTO> items;
+    private final int sum;
 
-    public String getDishName() {
-        return dishName;
+
+    public CartDTO(List<FoodDishDTO> items) {
+        this.items = items;
+        this.sum = items.stream().mapToInt(FoodDishDTO::getSum).sum();
     }
 
-    public void setDishName(String dishName) {
-        this.dishName = dishName;
+
+    public List<FoodDishDTO> getItems() {
+        return items;
     }
 
-    public int getDishPrice() {
-        return dishPrice;
+    public int getSum() {
+        return sum;
     }
 
-    public void setDishPrice(int dishPrice) {
-        this.dishPrice = dishPrice;
-    }
-
-    public int getDishQuantity() {
-        return dishQuantity;
-    }
-
-    public void setDishQuantity(int dishQuantity) {
-        this.dishQuantity = dishQuantity;
-    }
 }

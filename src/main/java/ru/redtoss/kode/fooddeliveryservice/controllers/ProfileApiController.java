@@ -12,7 +12,7 @@ import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.ConvertEntity;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
-import ru.redtoss.kode.fooddeliveryservice.utils.ErrorResponse;
+import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
 
@@ -70,8 +70,8 @@ public class ProfileApiController implements ShowErrorMessage, ConvertEntity {
     }
 
     @ExceptionHandler
-    private ResponseEntity<ErrorResponse> handleException(PersonNotFoundException error) {
-        ErrorResponse response = new ErrorResponse(
+    private ResponseEntity<DefaultErrorResponse> handleException(PersonNotFoundException error) {
+        DefaultErrorResponse response = new DefaultErrorResponse(
                 "User with id wasn't found",
                 System.currentTimeMillis()
         );
