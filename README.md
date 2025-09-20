@@ -122,7 +122,7 @@
 
 1. Клонировать репозиторий:
 ```bash
-git clone https://github.com/your-username/food-delivery-service.git
+[git clone https://github.com/your-username/food-delivery-service.git](https://github.com/RedTosS39/FoodDeliveryService.git)
 ```
 
 
