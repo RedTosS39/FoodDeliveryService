@@ -9,7 +9,7 @@ import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 
 @Entity
 @Table(name = "Restaurant")
-public class Restaurant {
+public class RestaurantEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,30 +39,30 @@ public class Restaurant {
     @Column(name = "IS_ACTIVE")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "restaurant")
-    private FoodMenu menu;
+    @OneToOne(mappedBy = "restaurantEntity")
+    private FoodMenuEntity menu;
 
-    @OneToOne(mappedBy = "restaurant")
-    private Cart cart;
+    @OneToOne(mappedBy = "restaurantEntity")
+    private CartEntity cartEntity;
 
 
 
-    public Restaurant() {
+    public RestaurantEntity() {
     }
 
-    public Cart getCart() {
-        return cart;
+    public CartEntity getCart() {
+        return cartEntity;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCart(CartEntity cartEntity) {
+        this.cartEntity = cartEntity;
     }
 
-    public FoodMenu getMenu() {
+    public FoodMenuEntity getMenu() {
         return menu;
     }
 
-    public void setMenu(FoodMenu menu) {
+    public void setMenu(FoodMenuEntity menu) {
         this.menu = menu;
     }
 

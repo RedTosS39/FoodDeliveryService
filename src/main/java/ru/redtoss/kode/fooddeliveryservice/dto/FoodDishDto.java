@@ -3,7 +3,7 @@ package ru.redtoss.kode.fooddeliveryservice.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
-public class FoodDishDTO {
+public class FoodDishDto {
     @Size(min = 2, max = 50)
     private String dishName;
 

@@ -7,14 +7,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 
 @Entity
 @Getter
 @Table(name = "Person")
 @RequiredArgsConstructor
-public class Person {
+public class PersonEntity {
     @Id
     @Setter
     @Column(name = "USER_ID")
@@ -28,23 +26,23 @@ public class Person {
     @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов")
     private String name;
 
-    @OneToOne(mappedBy = "person")
-    private PersonProfile profile;
+    @OneToOne(mappedBy = "personEntity")
+    private PersonProfileEntity profile;
 
 
 
-    public void setProfile(PersonProfile profile) {
+    public void setProfile(PersonProfileEntity profile) {
         this.profile = profile;
         if (profile != null) {
             profile.setIsActive(true);
-            profile.setPerson(this);
+            profile.setPersonEntity(this);
         }
     }
 
 
-    public void removeProfile(PersonProfile profile) {
+    public void removeProfile(PersonProfileEntity profile) {
         if (profile != null) {
-            profile.setPerson(null);
+            profile.setPersonEntity(null);
         }
         this.profile = null;
     }

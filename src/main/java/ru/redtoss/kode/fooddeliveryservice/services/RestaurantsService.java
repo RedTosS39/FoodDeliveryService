@@ -4,11 +4,11 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodDish;
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodMenu;
-import ru.redtoss.kode.fooddeliveryservice.entities.Restaurant;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDto;
+import ru.redtoss.kode.fooddeliveryservice.entities.FoodDishEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.FoodMenuEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.RestaurantEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodDishRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodMenuRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.RestaurantRepository;
@@ -34,13 +34,15 @@ public class RestaurantsService implements ConvertEntity {
         this.foodDishRepository = foodDishRepository;
     }
 
-    public List<RestaurantDTO> findAll() {
-        return restaurantRepository.findAll().stream().filter(Restaurant::getActive
+    public List<RestaurantDto> findAll() {
+        return restaurantRepository.findAll()
+                .stream()
+                .filter(RestaurantEntity::getActive
         ).map(this::convertToRestaurantDTO).collect(Collectors.toList());
     }
 
 
-    public RestaurantDTO findById(int id) {
+    public RestaurantDto findById(int id) {
         if (restaurantRepository.findById(id).isPresent()) {
             return convertToRestaurantDTO(restaurantRepository.findById(id).get());
         }
@@ -48,63 +50,63 @@ public class RestaurantsService implements ConvertEntity {
     }
 
     @Transactional
-    public void createRestaurant(RestaurantDTO restaurantDTO) {
-        Restaurant restaurant = convertToRestaurant(restaurantDTO);
-        restaurant.setName(restaurantDTO.getName());
-        restaurant.setActive(true);
-        Hibernate.initialize(Restaurant.class);
+    public void createRestaurant(RestaurantDto restaurantDTO) {
+        RestaurantEntity restaurantEntity = convertToRestaurant(restaurantDTO);
+        restaurantEntity.setName(restaurantDTO.getName());
+        restaurantEntity.setActive(true);
+        Hibernate.initialize(RestaurantEntity.class);
 
-        FoodMenu foodMenu = new FoodMenu();
-        restaurant.setMenu(foodMenu);
-        foodMenu.setRestaurant(restaurant);
-        foodMenuRepository.save(foodMenu);
-        restaurantRepository.save(restaurant);
+        FoodMenuEntity foodMenuEntity = new FoodMenuEntity();
+        restaurantEntity.setMenu(foodMenuEntity);
+        foodMenuEntity.setRestaurantEntity(restaurantEntity);
+        foodMenuRepository.save(foodMenuEntity);
+        restaurantRepository.save(restaurantEntity);
     }
 
     @Transactional
-    public void createDish(int id, FoodDishDTO dishDTO) {
-        FoodDish dish = convertToFoodDish(dishDTO);
-        Optional<FoodMenu> optionalFoodMenu = foodMenuRepository.findById(id);
+    public void createDish(int id, FoodDishDto dishDTO) {
+        FoodDishEntity dish = convertToFoodDish(dishDTO);
+        Optional<FoodMenuEntity> optionalFoodMenu = foodMenuRepository.findById(id);
         if (optionalFoodMenu.isPresent()) {
-            FoodMenu foodMenu = optionalFoodMenu.get();
-            if (foodMenu.getDishes().stream()
+            FoodMenuEntity foodMenuEntity = optionalFoodMenu.get();
+            if (foodMenuEntity.getDishes().stream()
                     .anyMatch(it -> it.getDishName().equals(dishDTO.getDishName()))) {
                 dish.setQuantity(dishDTO.getDishQuantity());
             } else {
-                dish.setFoodMenu(foodMenu);
+                dish.setFoodMenuEntity(foodMenuEntity);
                 dish.setAvailable(true);
                 dish.setPrice(dishDTO.getDishPrice());
                 dish.setQuantity(dishDTO.getDishQuantity());
-                foodMenu.getDishes().add(dish);
+                foodMenuEntity.getDishes().add(dish);
             }
             foodDishRepository.save(dish);
-            foodMenuRepository.save(foodMenu);
+            foodMenuRepository.save(foodMenuEntity);
         } else {
             throw new MenuNotCreatedException();
         }
     }
 
     @Transactional
-    public void updateRestaurant(int id, RestaurantDTO updater) {
-        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
+    public void updateRestaurant(int id, RestaurantDto updater) {
+        Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(id);
         if (optionalRestaurant.isPresent()) {
-            Restaurant restaurant = optionalRestaurant.get();
-            restaurant.setName(updater.getName());
+            RestaurantEntity restaurantEntity = optionalRestaurant.get();
+            restaurantEntity.setName(updater.getName());
             if (updater.getRating() != null) {
-                restaurant.setRating(updater.getRating());
+                restaurantEntity.setRating(updater.getRating());
             }
 
             if (updater.getActive() != null) {
-                restaurant.setActive(updater.getActive());
+                restaurantEntity.setActive(updater.getActive());
             }
 
             if (updater.getRestaurantType() != null) {
-                restaurant.setRestaurantType(updater.getRestaurantType());
+                restaurantEntity.setRestaurantType(updater.getRestaurantType());
             }
 
-            restaurantRepository.save(restaurant);
+            restaurantRepository.save(restaurantEntity);
 
-            System.out.println(restaurant);
+            System.out.println(restaurantEntity);
         } else {
             throw new RestaurantNotFoundException();
         }
@@ -112,7 +114,7 @@ public class RestaurantsService implements ConvertEntity {
 
     @Transactional
     public void deleteRestaurant(int id) {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+        Optional<RestaurantEntity> restaurant = restaurantRepository.findById(id);
         if (restaurant.isPresent()) {
             restaurant.get().setActive(false);
         } else {

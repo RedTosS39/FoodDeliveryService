@@ -1,9 +1,9 @@
 package ru.redtoss.kode.fooddeliveryservice.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.redtoss.kode.fooddeliveryservice.entities.Cart;
+import ru.redtoss.kode.fooddeliveryservice.entities.CartEntity;
 
-public interface CartRepository extends JpaRepository<Cart, Integer> {
+public interface CartRepository extends JpaRepository<CartEntity, Integer> {
 
 
 }

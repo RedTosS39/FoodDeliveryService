@@ -7,8 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.dto.PersonDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.PersonDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.ConvertEntity;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
@@ -33,28 +33,28 @@ public class ProfileApiController implements ShowErrorMessage, ConvertEntity {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<ProfileDTO> findAll() {
+    public List<ProfileDto> findAll() {
         return peopleService.findAllPeople(Role.BUYER);
     }
 
     @GetMapping("/{id}")
-    public ProfileDTO getPerson(@PathVariable int id) {
+    public ProfileDto getPerson(@PathVariable int id) {
         return peopleService.findProfileById(id);
     }
 
     @GetMapping("/")
-    public List<ProfileDTO> getPersonByRole(@RequestParam Role role) {
+    public List<ProfileDto> getPersonByRole(@RequestParam Role role) {
         return peopleService.findAllPeople(role);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable int id, @RequestBody @Valid PersonDTO profileDTO) {
+    public ResponseEntity<HttpStatus> update(@PathVariable int id, @RequestBody @Valid PersonDto profileDTO) {
         peopleService.update(id, profileDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> createPerson(@RequestBody @Valid PersonDto personDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMsg = showErrorMessage(bindingResult);
             throw new PersonNotCreatedException(errorMsg);

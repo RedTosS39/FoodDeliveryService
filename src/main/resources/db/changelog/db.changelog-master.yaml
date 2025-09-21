@@ -1,0 +1,7 @@
+databaseChangeLog:
+    - includ:
+        file: db/changelog/db.changelog-1.0.sql
+      id: 0
+      author: admin
+      changes:
+        -

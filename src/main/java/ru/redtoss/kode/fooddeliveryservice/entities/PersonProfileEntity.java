@@ -3,7 +3,6 @@ package ru.redtoss.kode.fooddeliveryservice.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +16,7 @@ import java.util.List;
 @Entity
 @RequiredArgsConstructor
 @Table(name = "PERSON_PROFILE")
-public class PersonProfile{
+public class PersonProfileEntity {
 
     @Id
     @Setter
@@ -27,7 +26,7 @@ public class PersonProfile{
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
-    private Person person;
+    private PersonEntity personEntity;
 
     @Column(name = "NAME")
     @NotNull(message = "Enter the username")
@@ -40,7 +39,7 @@ public class PersonProfile{
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "COURIER_ID", referencedColumnName = "ID")
-    private Courier courier;
+    private CourierEntity courierEntity;
 
 
     @Column(name = "UPDATED_DATE")
@@ -55,18 +54,26 @@ public class PersonProfile{
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToOne(mappedBy = "personProfile", cascade = CascadeType.ALL)
-    private Cart cart;
+    @OneToOne(mappedBy = "personProfileEntity", cascade = CascadeType.ALL)
+    private CartEntity cartEntity;
 
     @OneToMany(mappedBy = "people", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodOrder> foodOrderList;
+    private List<FoodOrderEntity> foodOrderEntityList;
 
-    public Person getPerson() {
-        return person;
+    public int getId() {
+        return id;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public PersonEntity getPersonEntity() {
+        return personEntity;
+    }
+
+    public void setPersonEntity(PersonEntity personEntity) {
+        this.personEntity = personEntity;
     }
 
     public @NotNull(message = "Enter the username") @Size(min = 2, max = 10, message = "Размер от 2 до 10 символов") String getName() {
@@ -85,12 +92,12 @@ public class PersonProfile{
         this.role = role;
     }
 
-    public Courier getCourier() {
-        return courier;
+    public CourierEntity getCourierEntity() {
+        return courierEntity;
     }
 
-    public void setCourier(Courier courier) {
-        this.courier = courier;
+    public void setCourierEntity(CourierEntity courierEntity) {
+        this.courierEntity = courierEntity;
     }
 
     public LocalDateTime getUpdatedDate() {
@@ -117,20 +124,20 @@ public class PersonProfile{
         isActive = active;
     }
 
-    public Cart getCart() {
-        return cart;
+    public CartEntity getCartEntity() {
+        return cartEntity;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCartEntity(CartEntity cartEntity) {
+        this.cartEntity = cartEntity;
     }
 
-    public List<FoodOrder> getFoodOrderList() {
-        return foodOrderList;
+    public List<FoodOrderEntity> getFoodOrderEntityList() {
+        return foodOrderEntityList;
     }
 
-    public void setFoodOrderList(List<FoodOrder> foodOrderList) {
-        this.foodOrderList = foodOrderList;
+    public void setFoodOrderEntityList(List<FoodOrderEntity> foodOrderEntityList) {
+        this.foodOrderEntityList = foodOrderEntityList;
     }
 
     @Override

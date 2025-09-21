@@ -4,12 +4,12 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.redtoss.kode.fooddeliveryservice.dto.CartDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.Cart;
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodDish;
-import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
-import ru.redtoss.kode.fooddeliveryservice.entities.Restaurant;
+import ru.redtoss.kode.fooddeliveryservice.dto.CartDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDto;
+import ru.redtoss.kode.fooddeliveryservice.entities.CartEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.FoodDishEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfileEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.RestaurantEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CartRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodDishRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
@@ -39,19 +39,19 @@ public class CartService implements ConvertEntity {
         this.restaurantRepository = restaurantRepository;
     }
 
-    public CartDTO findAll(int personId) {
-        Optional<PersonProfile> optionalPersonProfile = profileRepository.findById(personId);
+    public CartDto findAll(int personId) {
+        Optional<PersonProfileEntity> optionalPersonProfile = profileRepository.findById(personId);
         if (optionalPersonProfile.isPresent()) {
-            PersonProfile personProfile = optionalPersonProfile.get();
-            Cart cart = personProfile.getCart();
-            int total = cart.countSum();
-            cart.setSum(total);
+            PersonProfileEntity personProfileEntity = optionalPersonProfile.get();
+            CartEntity cartEntity = personProfileEntity.getCartEntity();
+            int total = cartEntity.countSum();
+            cartEntity.setSum(total);
 
-            List<FoodDishDTO> list = cart.getFoodDishes().stream()
+            List<FoodDishDto> list = cartEntity.getFoodDishEntities().stream()
                     .map(this::convertToFoodDishDTO)
                     .toList();
 
-            return new CartDTO(list);
+            return new CartDto(list);
         } else {
             throw new PersonNotFoundException();
         }
@@ -59,24 +59,28 @@ public class CartService implements ConvertEntity {
 
     @Transactional
     public void removeItem(int dishId, int personId) {
-        Optional<PersonProfile> optionalPersonProfile = profileRepository.findById(personId);
+        Optional<PersonProfileEntity> optionalPersonProfile = profileRepository.findById(personId);
         if (optionalPersonProfile.isPresent()) {
-            PersonProfile personProfile = optionalPersonProfile.get();
-            Optional<FoodDish> optionalFoodDish = personProfile.getCart().getFoodDishes().stream().filter(it -> it.getId() == dishId).findFirst();
+            PersonProfileEntity personProfileEntity = optionalPersonProfile.get();
+            Optional<FoodDishEntity> optionalFoodDish = personProfileEntity.getCartEntity()
+                    .getFoodDishEntities()
+                    .stream()
+                    .filter(it -> it.getId() == dishId)
+                    .findFirst();
 
             if (optionalFoodDish.isPresent()) {
-                FoodDish foodDish = optionalFoodDish.get();
-                int newQty = foodDish.getQuantity() - 1;
+                FoodDishEntity foodDishEntity = optionalFoodDish.get();
+                int newQty = foodDishEntity.getQuantity() - 1;
                 System.out.println("Dish after" + newQty);
                 if (newQty < 1) {
-                    personProfile.getCart().getFoodDishes().remove(foodDish);
-                    foodDish.setCart(null);
+                    personProfileEntity.getCartEntity().getFoodDishEntities().remove(foodDishEntity);
+                    foodDishEntity.setCartEntity(null);
                 } else {
-                   foodDish.setQuantity(newQty);
+                   foodDishEntity.setQuantity(newQty);
                 }
 
                 foodDishRepository.save(optionalFoodDish.get());
-                profileRepository.save(personProfile);
+                profileRepository.save(personProfileEntity);
             } else {
                 throw new DishNotFoundException("Dish with id: " + dishId + " not found");
             }
@@ -88,28 +92,28 @@ public class CartService implements ConvertEntity {
 
     @Transactional
     public void addDishToCart(int restaurantId, int dishId, int userId) {
-        Hibernate.initialize(Restaurant.class);
-        Hibernate.initialize(PersonProfile.class);
+        Hibernate.initialize(RestaurantEntity.class);
+        Hibernate.initialize(PersonProfileEntity.class);
 
 
-        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        Optional<FoodDish> optionalFoodDish = foodDishRepository.findById(dishId);
-        Optional<PersonProfile> personProfileOptional = profileRepository.findById(userId);
+        Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(restaurantId);
+        Optional<FoodDishEntity> optionalFoodDish = foodDishRepository.findById(dishId);
+        Optional<PersonProfileEntity> personProfileOptional = profileRepository.findById(userId);
 
 
         if (optionalFoodDish.isPresent() && personProfileOptional.isPresent() && optionalRestaurant.isPresent()) {
 
-            Restaurant restaurant = optionalRestaurant.get();
-            FoodDish foodDish = optionalFoodDish.get();
-            PersonProfile person = personProfileOptional.get();
+            RestaurantEntity restaurantEntity = optionalRestaurant.get();
+            FoodDishEntity foodDishEntity = optionalFoodDish.get();
+            PersonProfileEntity person = personProfileOptional.get();
 
-            if (!restaurant.getActive()) {
+            if (!restaurantEntity.getActive()) {
                 throw new RestaurantNotCreatedException("Restaurant is close");
             }
 
-            if (restaurant.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId)) {
-                Optional<FoodDish> currentDish = person.getCart()
-                        .getFoodDishes()
+            if (restaurantEntity.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId)) {
+                Optional<FoodDishEntity> currentDish = person.getCartEntity()
+                        .getFoodDishEntities()
                         .stream()
                         .filter(it -> it.getId() == dishId)
                         .findFirst();
@@ -118,14 +122,14 @@ public class CartService implements ConvertEntity {
                     currentDish.get().setQuantity(currentDish.get().getQuantity() + 1);
                     foodDishRepository.save(currentDish.get());
                 } else {
-                    foodDish.setQuantity(1);
-                    person.getCart().getFoodDishes().add(foodDish);
+                    foodDishEntity.setQuantity(1);
+                    person.getCartEntity().getFoodDishEntities().add(foodDishEntity);
 
-                    foodDish.setCart(person.getCart());
-                    foodDishRepository.save(foodDish);
+                    foodDishEntity.setCartEntity(person.getCartEntity());
+                    foodDishRepository.save(foodDishEntity);
                 }
 
-                cartRepository.save(person.getCart());
+                cartRepository.save(person.getCartEntity());
             } else {
                 throw new DishNotFoundException("Dish not found");
             }
@@ -136,10 +140,10 @@ public class CartService implements ConvertEntity {
 
     @Transactional
     public void deleteDishFromCart(int userId) {
-        Optional<PersonProfile> personProfileOptional = profileRepository.findById(userId);
+        Optional<PersonProfileEntity> personProfileOptional = profileRepository.findById(userId);
         if (personProfileOptional.isPresent()) {
-            PersonProfile personProfile = personProfileOptional.get();
-            personProfile.getCart().getFoodDishes().clear();
+            PersonProfileEntity personProfileEntity = personProfileOptional.get();
+            personProfileEntity.getCartEntity().getFoodDishEntities().clear();
         }
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDto;
 import ru.redtoss.kode.fooddeliveryservice.services.FoodDishService;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotCreatedException;
@@ -28,13 +28,13 @@ public class DishApiController implements ShowErrorMessage {
     }
 
     @GetMapping
-    public List<FoodDishDTO> findAll(@PathVariable int id) {
+    public List<FoodDishDto> findAll(@PathVariable int id) {
         return foodDishService.findAll(id);
     }
 
     @PostMapping()
     public ResponseEntity<HttpStatus> createDish(@PathVariable int id,
-                                                 @RequestBody @Valid FoodDishDTO foodDishDTO,
+                                                 @RequestBody @Valid FoodDishDto foodDishDTO,
                                                  @RequestParam(name = "dishName", required = false) String dishName,
                                                  @RequestParam(name = "dishPrice", required = false) Integer dishPrice,
                                                  @RequestParam(name = "quantity", required = false) Integer quantity,
@@ -54,7 +54,7 @@ public class DishApiController implements ShowErrorMessage {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> update(@PathVariable int id, @RequestBody FoodDishDTO foodDishDTO) {
+    public ResponseEntity<HttpStatus> update(@PathVariable int id, @RequestBody FoodDishDto foodDishDTO) {
         if (foodDishDTO.getDishName() != null) {
             foodDishDTO.setDishName(foodDishDTO.getDishName());
         }

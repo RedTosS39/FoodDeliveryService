@@ -1,7 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "Food_Menu")
-public class FoodMenu {
+public class FoodMenuEntity {
 
     @Id
     @Column(name = "id")
@@ -18,16 +17,16 @@ public class FoodMenu {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "RESTAURANT_ID", referencedColumnName = "ID")
-    private Restaurant restaurant;
+    private RestaurantEntity restaurantEntity;
 
-    @OneToMany(mappedBy = "foodMenu")
-    private List<FoodDish> dishes;
+    @OneToMany(mappedBy = "foodMenuEntity")
+    private List<FoodDishEntity> dishes;
 
-    public List<FoodDish> getDishes() {
+    public List<FoodDishEntity> getDishes() {
         return dishes;
     }
 
-    public void setDishes(List<FoodDish> dishes) {
+    public void setDishes(List<FoodDishEntity> dishes) {
         this.dishes = dishes;
     }
 
@@ -39,12 +38,12 @@ public class FoodMenu {
         this.id = id;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public RestaurantEntity getRestaurantEntity() {
+        return restaurantEntity;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurantEntity(RestaurantEntity restaurantEntity) {
+        this.restaurantEntity = restaurantEntity;
     }
 
     @Override

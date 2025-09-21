@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "Food_Order")
-public class FoodOrder {
+public class FoodOrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +21,16 @@ public class FoodOrder {
     @ManyToOne(fetch = FetchType.EAGER,
             cascade = {CascadeType.ALL})
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-    private PersonProfile people;
+    private PersonProfileEntity people;
 
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "COURIER_ID", referencedColumnName = "ID")
-    private Courier courier;
+    private CourierEntity courierEntity;
 
 
-    @OneToMany(mappedBy = "foodOrder", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodDish> foodDishes;
+    @OneToMany(mappedBy = "foodOrderEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodDishEntity> foodDishEntities;
 
     @Column(name = "STATUS")
     private OrderStatus orderStatus;
@@ -51,38 +51,38 @@ public class FoodOrder {
         this.id = id;
     }
 
-    public PersonProfile getPeople() {
+    public PersonProfileEntity getPeople() {
         return people;
     }
 
-    public void setPeople(PersonProfile people) {
-        this.people = people;
+    public void setPeople(PersonProfileEntity peopleEntity) {
+        this.people = peopleEntity;
     }
 
-    public Courier getCourier() {
-        return courier;
+    public CourierEntity getCourierEntity() {
+        return courierEntity;
     }
 
-    public void setCourier(Courier courier) {
-        this.courier = courier;
+    public void setCourierEntity(CourierEntity courierEntity) {
+        this.courierEntity = courierEntity;
     }
 
-    public List<FoodDish> getFoodDishes() {
-        return foodDishes;
+    public List<FoodDishEntity> getFoodDishEntities() {
+        return foodDishEntities;
     }
 
-    public void setFoodDishes(List<FoodDish> foodDishes) {
-        this.foodDishes = foodDishes;
+    public void setFoodDishEntities(List<FoodDishEntity> foodDishEntities) {
+        this.foodDishEntities = foodDishEntities;
     }
 
     @Override
     public String toString() {
-        return "FoodOrder{" +
+        return "FoodOrderEntity{" +
                "id=" + id +
-               ", people=" + people +
-               ", courier=" + courier +
-               ", foodDishes=" + foodDishes +
-               ", orderStatus=" + orderStatus +
+               ", peopleEntity=" + people +
+               ", courierEntity=" + courierEntity +
+               ", foodDishesEntity=" + foodDishEntities +
+               ", orderStatusEntity=" + orderStatus +
                '}';
     }
 }

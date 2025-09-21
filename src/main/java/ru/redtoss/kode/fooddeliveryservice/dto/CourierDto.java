@@ -2,10 +2,11 @@ package ru.redtoss.kode.fooddeliveryservice.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import ru.redtoss.kode.fooddeliveryservice.services.ProfileUpdater;
 
-public class CourierDTO implements ProfileUpdater{
+public class CourierDto implements ProfileUpdater {
 
-    public CourierDTO() {
+    public CourierDto() {
 
     }
 

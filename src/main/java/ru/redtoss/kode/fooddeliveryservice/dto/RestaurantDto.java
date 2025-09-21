@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 
-public class RestaurantDTO {
+public class RestaurantDto {
 
     private int id;
 

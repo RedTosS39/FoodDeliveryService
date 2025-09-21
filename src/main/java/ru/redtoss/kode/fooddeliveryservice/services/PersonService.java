@@ -2,7 +2,7 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.redtoss.kode.fooddeliveryservice.entities.Person;
+import ru.redtoss.kode.fooddeliveryservice.entities.PersonEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class PersonService {
         this.personRepository = personRepository1;
     }
 
-    public List<Person> findAll() {
+    public List<PersonEntity> findAll() {
         return personRepository.findAll();
     }
 }

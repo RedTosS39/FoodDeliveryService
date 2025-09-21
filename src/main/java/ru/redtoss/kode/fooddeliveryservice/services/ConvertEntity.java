@@ -8,60 +8,60 @@ public interface ConvertEntity {
 
     ModelMapper modelMapper = new ModelMapper();
 
-    default PersonProfile convertToPersonProfile(CourierDTO courierDTO) {
-        return modelMapper.map(courierDTO, PersonProfile.class);
+    default PersonProfileEntity convertToPersonProfile(CourierDto courierDTO) {
+        return modelMapper.map(courierDTO, PersonProfileEntity.class);
     }
 
-    default PersonProfile convertToPersonProfile(ProfileUpdater profileDTO) {
-        return modelMapper.map(profileDTO, PersonProfile.class);
+    default PersonProfileEntity convertToPersonProfile(ProfileUpdater profileDTO) {
+        return modelMapper.map(profileDTO, PersonProfileEntity.class);
     }
 
-    default Courier converToCourier(ProfileUpdater profileUpdater) {
-        return modelMapper.map(profileUpdater, Courier.class);
+    default CourierEntity convertToCourierEntity(ProfileUpdater profileUpdater) {
+        return modelMapper.map(profileUpdater, CourierEntity.class);
     }
 
-    default ProfileDTO converToProfileDTO(PersonProfile person) {
-        return modelMapper.map(person, ProfileDTO.class);
+    default ProfileDto converToProfileDTO(PersonProfileEntity person) {
+        return modelMapper.map(person, ProfileDto.class);
     }
 
-    default Person convertToPerson(ProfileUpdater personDTO) {
-        return modelMapper.map(personDTO, Person.class);
+    default PersonEntity convertToPerson(ProfileUpdater personDTO) {
+        return modelMapper.map(personDTO, PersonEntity.class);
     }
 
-    default Restaurant convertToRestaurant(RestaurantDTO profileDTO) {
-        return modelMapper.map(profileDTO, Restaurant.class);
+    default RestaurantEntity convertToRestaurant(RestaurantDto profileDTO) {
+        return modelMapper.map(profileDTO, RestaurantEntity.class);
     }
 
-    default RestaurantDTO convertToRestaurantDTO(Restaurant restaurant) {
-        return modelMapper.map(restaurant, RestaurantDTO.class);
+    default RestaurantDto convertToRestaurantDTO(RestaurantEntity restaurantEntity) {
+        return modelMapper.map(restaurantEntity, RestaurantDto.class);
     }
 
-    default FoodDish convertToFoodDish(FoodDishDTO foodDishDTO) {
-        return modelMapper.map(foodDishDTO, FoodDish.class);
+    default FoodDishEntity convertToFoodDish(FoodDishDto foodDishDTO) {
+        return modelMapper.map(foodDishDTO, FoodDishEntity.class);
     }
 
-    default FoodDishDTO convertToFoodDishDTO(FoodDish foodDish) {
-        return modelMapper.map(foodDish, FoodDishDTO.class);
+    default FoodDishDto convertToFoodDishDTO(FoodDishEntity foodDishEntity) {
+        return modelMapper.map(foodDishEntity, FoodDishDto.class);
     }
 
-    default FoodMenu convertToFoodMenu(FoodMenuDTO foodMenuDTO) {
-        return modelMapper.map(foodMenuDTO, FoodMenu.class);
+    default FoodMenuEntity convertToFoodMenu(FoodMenuDto foodMenuDTO) {
+        return modelMapper.map(foodMenuDTO, FoodMenuEntity.class);
     }
 
-    default Cart convertToCart(CartDTO cartDTO) {
-        return modelMapper.map(cartDTO, Cart.class);
+    default CartEntity convertToCart(CartDto cartDTO) {
+        return modelMapper.map(cartDTO, CartEntity.class);
     }
 
-    default CartDTO convertToCartDTO(Cart cart) {
+    default CartDto convertToCartDTO(CartEntity cartEntity) {
 
-        return modelMapper.map(cart, CartDTO.class);
+        return modelMapper.map(cartEntity, CartDto.class);
     }
 
-    default FoodOrderDTO convertToFoodOrderDTO(FoodOrder foodOrder) {
-        return modelMapper.map(foodOrder, FoodOrderDTO.class);
+    default FoodOrderDto convertToFoodOrderDTO(FoodOrderEntity foodOrderEntity) {
+        return modelMapper.map(foodOrderEntity, FoodOrderDto.class);
     }
 
-    default FoodOrder convertToFoodOrder(FoodOrderDTO foodOrderDTO) {
-        return modelMapper.map(foodOrderDTO, FoodOrder.class);
+    default FoodOrderEntity convertToFoodOrder(FoodOrderDto foodOrderDTO) {
+        return modelMapper.map(foodOrderDTO, FoodOrderEntity.class);
     }
 }

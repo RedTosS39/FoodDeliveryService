@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Food_Dish")
 @NoArgsConstructor
-public class FoodDish {
+public class FoodDishEntity {
 
     @Id
     @Column(name = "id", insertable = false, updatable = false)
@@ -22,7 +22,7 @@ public class FoodDish {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "FOOD_CART_ID", referencedColumnName = "ID")
-    private Cart cart;
+    private CartEntity cartEntity;
 
     @Column(name = "QUANTITY")
     private int quantity;
@@ -30,22 +30,22 @@ public class FoodDish {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
 
-    private FoodMenu foodMenu;
+    private FoodMenuEntity foodMenuEntity;
 
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "FOOD_ORDER", referencedColumnName = "ID")
-    private FoodOrder foodOrder;
+    @JoinColumn(name = "FOOD_ORDER_ID", referencedColumnName = "ID")
+    private FoodOrderEntity foodOrderEntity;
 
     @Column(name = "is_available")
     private Boolean isAvailable;
 
-    public FoodOrder getFoodOrder() {
-        return foodOrder;
+    public FoodOrderEntity getFoodOrderEntity() {
+        return foodOrderEntity;
     }
 
-    public void setFoodOrder(FoodOrder foodOrder) {
-        this.foodOrder = foodOrder;
+    public void setFoodOrderEntity(FoodOrderEntity foodOrderEntity) {
+        this.foodOrderEntity = foodOrderEntity;
     }
 
     public int getQuantity() {
@@ -56,20 +56,20 @@ public class FoodDish {
         this.quantity = quantity;
     }
 
-    public Cart getCart() {
-        return cart;
+    public CartEntity getCartEntity() {
+        return cartEntity;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCartEntity(CartEntity cartEntity) {
+        this.cartEntity = cartEntity;
     }
 
-    public FoodMenu getFoodMenu() {
-        return foodMenu;
+    public FoodMenuEntity getFoodMenuEntity() {
+        return foodMenuEntity;
     }
 
-    public void setFoodMenu(FoodMenu foodMenu) {
-        this.foodMenu = foodMenu;
+    public void setFoodMenuEntity(FoodMenuEntity foodMenuEntity) {
+        this.foodMenuEntity = foodMenuEntity;
     }
 
     public int getId() {

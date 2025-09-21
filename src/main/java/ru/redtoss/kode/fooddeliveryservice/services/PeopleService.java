@@ -4,8 +4,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.ProfileUpdater;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
 import ru.redtoss.kode.fooddeliveryservice.entities.*;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
@@ -36,7 +35,7 @@ public class PeopleService implements ConvertEntity {
         this.cartRepository = cartRepository;
     }
 
-    public List<ProfileDTO> findAllPeople(Role role) {
+    public List<ProfileDto> findAllPeople(Role role) {
 
         return profileRepository.findAll()
                 .stream()
@@ -46,8 +45,8 @@ public class PeopleService implements ConvertEntity {
                 .collect(Collectors.toList());
     }
 
-    public ProfileDTO findProfileById(int id) {
-        Optional<PersonProfile> optionalPersonProfile = profileRepository.findById(id);
+    public ProfileDto findProfileById(int id) {
+        Optional<PersonProfileEntity> optionalPersonProfile = profileRepository.findById(id);
         if (optionalPersonProfile.isPresent()) {
             return converToProfileDTO(optionalPersonProfile.get());
         }
@@ -56,45 +55,45 @@ public class PeopleService implements ConvertEntity {
 
     @Transactional
     public void createPerson(ProfileUpdater personDTO, Role role) {
-        Person person = convertToPerson(personDTO);
-        PersonProfile profile = createUserProfile(person.getName(), role);
+        PersonEntity personEntity = convertToPerson(personDTO);
+        PersonProfileEntity profile = createUserProfile(personEntity.getName(), role);
 
-        profile.setPerson(person);
+        profile.setPersonEntity(personEntity);
         profile.setStatus(null);
         profile.setIsActive(true);
 
-        Hibernate.initialize(Cart.class);
-        Cart cart = new Cart();
-        cart.setPersonProfile(profile);
-        List<FoodDish> dishes = new ArrayList<>();
-        cart.setFoodDishes(dishes);
+        Hibernate.initialize(CartEntity.class);
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setPersonProfileEntity(profile);
+        List<FoodDishEntity> dishes = new ArrayList<>();
+        cartEntity.setFoodDishEntities(dishes);
 
-        profile.setCart(cart);
-        cartRepository.save(cart);
+        profile.setCartEntity(cartEntity);
+        cartRepository.save(cartEntity);
 
         profileRepository.save(profile);
-        personRepository.save(person);
+        personRepository.save(personEntity);
     }
 
     @Transactional
     public void createCourier(ProfileUpdater courierDTO, Role role) {
-        Courier courier = converToCourier(courierDTO);
-        PersonProfile profile = createUserProfile(courier.getName(), role);
+        CourierEntity courierEntity = convertToCourierEntity(courierDTO);
+        PersonProfileEntity profile = createUserProfile(courierEntity.getName(), role);
         profile.setIsActive(true);
-        profile.setCourier(courier);
+        profile.setCourierEntity(courierEntity);
         profile.setStatus(Status.ONLINE);
         profileRepository.save(profile);
     }
 
     @Transactional
     public void update(int id, ProfileUpdater updater) {
-        Optional<PersonProfile> profile = personRepository.findProfileWithId(id);
+        Optional<PersonProfileEntity> profile = personRepository.findProfileWithId(id);
         if (profile.isPresent()) {
-            PersonProfile personProfile = profile.get();
-            personProfile.setId(id);
-            personProfile.setName(updater.getName());
-            personProfile.setUpdatedDate(LocalDateTime.now());
-            profileRepository.save(personProfile);
+            PersonProfileEntity personProfileEntity = profile.get();
+            personProfileEntity.setId(id);
+            personProfileEntity.setName(updater.getName());
+            personProfileEntity.setUpdatedDate(LocalDateTime.now());
+            profileRepository.save(personProfileEntity);
         }
 
         System.out.println("Person updated:");
@@ -102,16 +101,16 @@ public class PeopleService implements ConvertEntity {
 
     @Transactional
     public void deletePersonProfile(int id) {
-        Optional<PersonProfile> profile = profileRepository.findById(id);
+        Optional<PersonProfileEntity> profile = profileRepository.findById(id);
         if (profile.isPresent())
             profile.get().setIsActive(false);
         else
             throw new PersonNotFoundException();
     }
 
-    private PersonProfile createUserProfile(String name, Role role) {
+    private PersonProfileEntity createUserProfile(String name, Role role) {
 
-        PersonProfile profile = new PersonProfile();
+        PersonProfileEntity profile = new PersonProfileEntity();
         profile.setName(name);
         profile.setRole(role);
         profile.setUpdatedDate(LocalDateTime.now());
