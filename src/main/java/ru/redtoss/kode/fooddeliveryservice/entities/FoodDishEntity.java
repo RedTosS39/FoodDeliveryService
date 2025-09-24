@@ -29,23 +29,22 @@ public class FoodDishEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
-
     private FoodMenuEntity foodMenuEntity;
 
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "FOOD_ORDER_ID", referencedColumnName = "ID")
-    private FoodOrderEntity foodOrderEntity;
+    private FoodOrderEntity foodOrder;
 
     @Column(name = "is_available")
     private Boolean isAvailable;
 
     public FoodOrderEntity getFoodOrderEntity() {
-        return foodOrderEntity;
+        return foodOrder;
     }
 
     public void setFoodOrderEntity(FoodOrderEntity foodOrderEntity) {
-        this.foodOrderEntity = foodOrderEntity;
+        this.foodOrder = foodOrderEntity;
     }
 
     public int getQuantity() {

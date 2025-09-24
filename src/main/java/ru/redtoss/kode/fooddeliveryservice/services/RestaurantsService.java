@@ -1,5 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class RestaurantsService implements ConvertEntity {
@@ -106,7 +108,7 @@ public class RestaurantsService implements ConvertEntity {
 
             restaurantRepository.save(restaurantEntity);
 
-            System.out.println(restaurantEntity);
+            log.info("restaurantEntity: {}", restaurantEntity);
         } else {
             throw new RestaurantNotFoundException();
         }

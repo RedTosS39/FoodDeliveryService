@@ -1,5 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
+import static java.rmi.server.LogStream.log;
+
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class CartService implements ConvertEntity {
@@ -71,12 +75,12 @@ public class CartService implements ConvertEntity {
             if (optionalFoodDish.isPresent()) {
                 FoodDishEntity foodDishEntity = optionalFoodDish.get();
                 int newQty = foodDishEntity.getQuantity() - 1;
-                System.out.println("Dish after" + newQty);
+                log.info("Dish after{} ", newQty );
                 if (newQty < 1) {
                     personProfileEntity.getCartEntity().getFoodDishEntities().remove(foodDishEntity);
                     foodDishEntity.setCartEntity(null);
                 } else {
-                   foodDishEntity.setQuantity(newQty);
+                    foodDishEntity.setQuantity(newQty);
                 }
 
                 foodDishRepository.save(optionalFoodDish.get());
@@ -95,7 +99,6 @@ public class CartService implements ConvertEntity {
         Hibernate.initialize(RestaurantEntity.class);
         Hibernate.initialize(PersonProfileEntity.class);
 
-
         Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(restaurantId);
         Optional<FoodDishEntity> optionalFoodDish = foodDishRepository.findById(dishId);
         Optional<PersonProfileEntity> personProfileOptional = profileRepository.findById(userId);
@@ -106,12 +109,13 @@ public class CartService implements ConvertEntity {
             RestaurantEntity restaurantEntity = optionalRestaurant.get();
             FoodDishEntity foodDishEntity = optionalFoodDish.get();
             PersonProfileEntity person = personProfileOptional.get();
+            CartEntity cartEntity = personProfileOptional.get().getCartEntity();
 
             if (!restaurantEntity.getActive()) {
                 throw new RestaurantNotCreatedException("Restaurant is close");
             }
 
-            if (restaurantEntity.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId)) {
+            if (restaurantEntity.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId) && cartEntity != null) {
                 Optional<FoodDishEntity> currentDish = person.getCartEntity()
                         .getFoodDishEntities()
                         .stream()

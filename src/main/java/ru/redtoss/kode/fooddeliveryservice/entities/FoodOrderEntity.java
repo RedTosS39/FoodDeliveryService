@@ -1,14 +1,12 @@
 package ru.redtoss.kode.fooddeliveryservice.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 
 import java.util.List;
 
 @Entity
-@Getter
 @NoArgsConstructor
 @Table(name = "Food_Order")
 public class FoodOrderEntity {
@@ -29,8 +27,8 @@ public class FoodOrderEntity {
     private CourierEntity courierEntity;
 
 
-    @OneToMany(mappedBy = "foodOrderEntity", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodDishEntity> foodDishEntities;
+    @OneToMany(mappedBy = "foodOrder", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodDishEntity> foodDishes;
 
     @Column(name = "STATUS")
     private OrderStatus orderStatus;
@@ -68,12 +66,14 @@ public class FoodOrderEntity {
     }
 
     public List<FoodDishEntity> getFoodDishEntities() {
-        return foodDishEntities;
+        return foodDishes;
     }
 
     public void setFoodDishEntities(List<FoodDishEntity> foodDishEntities) {
-        this.foodDishEntities = foodDishEntities;
+        this.foodDishes = foodDishEntities;
     }
+
+
 
     @Override
     public String toString() {
@@ -81,7 +81,7 @@ public class FoodOrderEntity {
                "id=" + id +
                ", peopleEntity=" + people +
                ", courierEntity=" + courierEntity +
-               ", foodDishesEntity=" + foodDishEntities +
+               ", foodDishesEntity=" + foodDishes +
                ", orderStatusEntity=" + orderStatus +
                '}';
     }

@@ -1,5 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class OrdersService implements ConvertEntity {
@@ -38,11 +40,26 @@ public class OrdersService implements ConvertEntity {
 
     }
 
+
+    @Transactional
+    public void deleteOrder(int orderId) {
+        FoodOrderEntity order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        order.getCourierEntity().getFoodOrderEntities().remove(order);
+        order.setCourierEntity(null);
+        orderRepository.save(order);
+    }
+
+    @Transactional
     public void updateOrderStatus(int order_Id, OrderStatus status) {
         Optional<FoodOrderEntity> order = orderRepository.findById(order_Id);
         if (order.isPresent()) {
+
+            log.info("Order status before{} ", order.get().getOrderStatus());
             order.get().setOrderStatus(status);
             orderRepository.save(order.get());
+
+            log.info("Order status updated{} ", order.get().getOrderStatus());
         }
     }
 
@@ -93,17 +110,20 @@ public class OrdersService implements ConvertEntity {
         Optional<FoodOrderEntity> optionalFoodOrder = orderRepository.findById(id);
         if (optionalFoodOrder.isPresent()) {
             FoodOrderEntity foodOrderEntity = optionalFoodOrder.get();
-            return foodOrderEntity.getFoodDishEntities().stream().map(this::convertToFoodDishDTO).toList();
+            return foodOrderEntity.getFoodDishEntities()
+                    .stream()
+                    .map(this::convertToFoodDishDTO)
+                    .toList();
         }
         throw new OrderNotFoundException();
     }
 
     public List<FoodOrderDto> showOrders(int userId) {
         List<FoodOrderEntity> list = orderRepository.findByPeopleId(userId);
-        System.out.println(list);
-        System.out.println(list.stream()
-                .map(this::tooFoodOrderDTO).toList());
-        return list.stream().map(this::tooFoodOrderDTO).toList();
+        log.info("Order List: {}", list);
+        return list.stream()
+                .map(this::tooFoodOrderDTO)
+                .toList();
     }
 
 

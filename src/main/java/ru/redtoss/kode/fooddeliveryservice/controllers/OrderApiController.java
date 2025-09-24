@@ -47,4 +47,10 @@ public class OrderApiController {
         ordersService.updateOrderStatus(id, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus>  deleteOrder(@PathVariable("id") int id) {
+        ordersService.deleteOrder(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
