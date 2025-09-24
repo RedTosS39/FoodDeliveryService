@@ -4,11 +4,11 @@ package ru.redtoss.kode.fooddeliveryservice.dto;
 import java.util.List;
 
 
-public class FoodMenuDTO {
+public class FoodMenuDto {
 
-    private List<FoodDishDTO> dishList;
+    private List<FoodDishDto> dishList;
 
-    public List<FoodDishDTO> getDishList() {
+    public List<FoodDishDto> getDishList() {
         return dishList;
     }
 

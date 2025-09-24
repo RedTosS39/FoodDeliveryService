@@ -6,19 +6,19 @@
 </head>
 <body>
 
-<p th:text="${'id Пользователя: ' + courier.get().getId()}">VALUE</p>
+<p th:text="${'id Пользователя: ' + courierEntity.get().getId()}">VALUE</p>
 <br/>
-<p th:text="${'Имя курьера: '  + courier.get().name}">VALUE</p>
+<p th:text="${'Имя курьера: '  + courierEntity.get().name}">VALUE</p>
 
-<p th:text="${'Последнее обновление: ' + courier.get().getUpdatedDate()}">VALUE</p>
+<p th:text="${'Последнее обновление: ' + courierEntity.get().getUpdatedDate()}">VALUE</p>
 
-<p th:text="${'Тип пользователя: ' + courier.get().getRole().toString()}">VALUE</p>
+<p th:text="${'Тип пользователя: ' + courierEntity.get().getRole().toString()}">VALUE</p>
 
-<p th:text="${'Статус курьера: ' + courier.get().getStatus().toString()}">VALUE</p>
+<p th:text="${'Статус курьера: ' + courierEntity.get().getStatus().toString()}">VALUE</p>
 <hr/>
 
 <br/>
-<!--<form th:method="DELETE" th:action="@{/couriers/{id}(id=${courier.get().getId()})}">-->
+<!--<form th:method="DELETE" th:action="@{/couriers/{id}(id=${courierEntity.get().getId()})}">-->
 <!--  <input type="submit" value="Delete"/>-->
 <!--</form>-->
 

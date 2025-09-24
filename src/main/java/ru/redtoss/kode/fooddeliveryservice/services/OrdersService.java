@@ -3,12 +3,12 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.FoodOrderDTO;
-import ru.redtoss.kode.fooddeliveryservice.entities.Cart;
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodDish;
-import ru.redtoss.kode.fooddeliveryservice.entities.FoodOrder;
-import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfile;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodOrderDto;
+import ru.redtoss.kode.fooddeliveryservice.entities.CartEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.FoodDishEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.FoodOrderEntity;
+import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfileEntity;
 import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 import ru.redtoss.kode.fooddeliveryservice.repositories.*;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
@@ -39,7 +39,7 @@ public class OrdersService implements ConvertEntity {
     }
 
     public void updateOrderStatus(int order_Id, OrderStatus status) {
-        Optional<FoodOrder> order = orderRepository.findById(order_Id);
+        Optional<FoodOrderEntity> order = orderRepository.findById(order_Id);
         if (order.isPresent()) {
             order.get().setOrderStatus(status);
             orderRepository.save(order.get());
@@ -49,14 +49,14 @@ public class OrdersService implements ConvertEntity {
 
     @Transactional
     public void createOrder(int personId) {
-        Optional<PersonProfile> optionalPersonProfile = personRepository.findById(personId);
+        Optional<PersonProfileEntity> optionalPersonProfile = personRepository.findById(personId);
         if (optionalPersonProfile.isPresent()) {
-            PersonProfile profile = optionalPersonProfile.get();
-            Cart cart = profile.getCart();
-            List<FoodDish> dishesFromCart = cart.getFoodDishes();
+            PersonProfileEntity profile = optionalPersonProfile.get();
+            CartEntity cartEntity = profile.getCartEntity();
+            List<FoodDishEntity> dishesFromCart = cartEntity.getFoodDishEntities();
 
-            if (cart.countSum() < 300) {
-                throw new DishNotFoundException("Order must be more then 300" + " Sum now:" + cart.countSum());
+            if (cartEntity.countSum() < 300) {
+                throw new DishNotFoundException("Order must be more then 300" + " Sum now:" + cartEntity.countSum());
             }
 
             if (dishesFromCart == null || dishesFromCart.isEmpty()) {
@@ -64,24 +64,24 @@ public class OrdersService implements ConvertEntity {
             }
 
 
-            FoodOrder order = new FoodOrder();
+            FoodOrderEntity order = new FoodOrderEntity();
 
-            order.setFoodDishes(new ArrayList<>(dishesFromCart));
+            order.setFoodDishEntities(new ArrayList<>(dishesFromCart));
             order.setPeople(profile);
             order.setOrderStatus(OrderStatus.NEW);
             orderRepository.save(order);
 
-            for (FoodDish dish : dishesFromCart) {
-                dish.setFoodOrder(order);
-                dish.setCart(null);
+            for (FoodDishEntity dish : dishesFromCart) {
+                dish.setFoodOrderEntity(order);
+                dish.setCartEntity(null);
             }
 
-            profile.getFoodOrderList().add(order);
+            profile.getFoodOrderEntityList().add(order);
 
-            cart.getFoodDishes().clear();
-            cartRepository.save(cart);
+            cartEntity.getFoodDishEntities().clear();
+            cartRepository.save(cartEntity);
 
-            profile.getFoodOrderList().add(order);
+            profile.getFoodOrderEntityList().add(order);
             personRepository.save(profile);
 
         } else {
@@ -89,27 +89,29 @@ public class OrdersService implements ConvertEntity {
         }
     }
 
-    public List<FoodDishDTO> findOrderById(int id) {
-        Optional<FoodOrder> optionalFoodOrder = orderRepository.findById(id);
+    public List<FoodDishDto> findOrderById(int id) {
+        Optional<FoodOrderEntity> optionalFoodOrder = orderRepository.findById(id);
         if (optionalFoodOrder.isPresent()) {
-            FoodOrder foodOrder = optionalFoodOrder.get();
-            return foodOrder.getFoodDishes().stream().map(this::convertToFoodDishDTO).toList();
+            FoodOrderEntity foodOrderEntity = optionalFoodOrder.get();
+            return foodOrderEntity.getFoodDishEntities().stream().map(this::convertToFoodDishDTO).toList();
         }
         throw new OrderNotFoundException();
     }
 
-    public List<FoodOrderDTO> showOrders(int userId) {
-        List<FoodOrder> list = orderRepository.findByPeopleId(userId);
+    public List<FoodOrderDto> showOrders(int userId) {
+        List<FoodOrderEntity> list = orderRepository.findByPeopleId(userId);
         System.out.println(list);
-        System.out.println(list.stream().map(this::tooFoodOrderDTO).toList());
+        System.out.println(list.stream()
+                .map(this::tooFoodOrderDTO).toList());
         return list.stream().map(this::tooFoodOrderDTO).toList();
     }
 
 
-    private FoodOrderDTO tooFoodOrderDTO(FoodOrder foodOrder) {
-        FoodOrderDTO foodOrderDTO = new FoodOrderDTO();
-        if (foodOrder.getFoodDishes() != null && !foodOrder.getFoodDishes().isEmpty()) {
-            List<FoodDishDTO> list = foodOrder.getFoodDishes().stream()
+    private FoodOrderDto tooFoodOrderDTO(FoodOrderEntity foodOrderEntity) {
+        FoodOrderDto foodOrderDTO = new FoodOrderDto();
+        if (foodOrderEntity.getFoodDishEntities() != null && !foodOrderEntity.getFoodDishEntities().isEmpty()) {
+            List<FoodDishDto> list = foodOrderEntity.getFoodDishEntities()
+                    .stream()
                     .map(this::convertToFoodDishDTO).toList();
             foodOrderDTO.setFoodDishDTOList(list);
             foodOrderDTO.setSum(list);
@@ -117,7 +119,7 @@ public class OrdersService implements ConvertEntity {
             foodOrderDTO.setFoodDishDTOList(new ArrayList<>());
             foodOrderDTO.setSum(new ArrayList<>());
         }
-        foodOrderDTO.setStatus(foodOrder.getOrderStatus());
+        foodOrderDTO.setStatus(foodOrderEntity.getOrderStatus());
         return foodOrderDTO;
     }
 

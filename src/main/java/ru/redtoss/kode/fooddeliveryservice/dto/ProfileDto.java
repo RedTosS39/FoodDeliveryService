@@ -2,13 +2,13 @@ package ru.redtoss.kode.fooddeliveryservice.dto;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.redtoss.kode.fooddeliveryservice.entities.Restaurant;
+import ru.redtoss.kode.fooddeliveryservice.entities.RestaurantEntity;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.models.Status;
 
 import java.time.LocalDateTime;
 
-public class ProfileDTO {
+public class ProfileDto {
 
     private String name;
 
@@ -18,14 +18,14 @@ public class ProfileDTO {
 
     private Boolean isActive;
 
-    private Restaurant restaurant;
+    private RestaurantEntity restaurantEntity;
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public RestaurantEntity getRestaurant() {
+        return restaurantEntity;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurant(RestaurantEntity restaurantEntity) {
+        this.restaurantEntity = restaurantEntity;
     }
 
     public Boolean getActive() {

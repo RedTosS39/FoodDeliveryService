@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @RequiredArgsConstructor
 @Table(name = "COURIER")
-public class Courier {
+public class CourierEntity {
 
     @Setter
     @Id
@@ -27,16 +27,16 @@ public class Courier {
     @Size(min = 2, max = 10, message = "Имя должно быть от 2 до 10 символов")
     private String name;
 
-    @OneToOne(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PersonProfile personProfile;
+    @OneToOne(mappedBy = "courierEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PersonProfileEntity personProfileEntity;
 
     @Setter
-    @OneToMany(mappedBy = "courier", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<FoodOrder> foodOrders;
+    @OneToMany(mappedBy = "courierEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<FoodOrderEntity> foodOrderEntities;
 
 
-    public PersonProfile getProfile() {
-        return personProfile;
+    public PersonProfileEntity getProfile() {
+        return personProfileEntity;
     }
 
     @Transient
@@ -44,11 +44,11 @@ public class Courier {
     private int orderCount;
 
 
-    public void setProfile(PersonProfile personProfile) {
-        if (personProfile != null) {
-            personProfile.setCourier(this);
+    public void setProfile(PersonProfileEntity personProfileEntity) {
+        if (personProfileEntity != null) {
+            personProfileEntity.setCourierEntity(this);
         } else {
-            this.personProfile = personProfile;
+            this.personProfileEntity = personProfileEntity;
         }
     }
 }

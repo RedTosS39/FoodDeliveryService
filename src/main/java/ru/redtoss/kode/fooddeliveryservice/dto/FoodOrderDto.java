@@ -4,25 +4,25 @@ import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 
 import java.util.List;
 
-public class FoodOrderDTO {
+public class FoodOrderDto {
 
-    private List<FoodDishDTO> foodDishDTOList;
+    private List<FoodDishDto> foodDishDtoList;
     private OrderStatus status;
     private int sum;
 
-    public void setFoodDishDTOList(List<FoodDishDTO> foodDishDTOList) {
-        this.foodDishDTOList = foodDishDTOList;
-        this.setSum(foodDishDTOList);
+    public void setFoodDishDTOList(List<FoodDishDto> foodDishDtoList) {
+        this.foodDishDtoList = foodDishDtoList;
+        this.setSum(foodDishDtoList);
     }
 
-    public void setSum(List<FoodDishDTO> list) {
+    public void setSum(List<FoodDishDto> list) {
         this.sum = list.stream()
-                .mapToInt(FoodDishDTO::getSum)
+                .mapToInt(FoodDishDto::getSum)
                 .sum();
     }
 
-    public List<FoodDishDTO> getFoodDishDTOList() {
-        return foodDishDTOList;
+    public List<FoodDishDto> getFoodDishDTOList() {
+        return foodDishDtoList;
     }
 
     public OrderStatus getStatus() {
@@ -40,7 +40,7 @@ public class FoodOrderDTO {
     @Override
     public String toString() {
         return "FoodOrderDTO{" +
-               "foodDishDTOList=" + foodDishDTOList +
+               "foodDishDTOList=" + foodDishDtoList +
                ", status=" + status +
                ", sum=" + sum +
                '}';

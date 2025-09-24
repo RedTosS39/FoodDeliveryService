@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDto;
 import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
 import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
@@ -28,17 +28,17 @@ public class RestaurantApiController implements ShowErrorMessage {
     }
 
     @GetMapping
-    public List<RestaurantDTO> findAll() {
+    public List<RestaurantDto> findAll() {
         return restaurantsService.findAll();
     }
 
     @GetMapping("/{id}")
-    public RestaurantDTO findRestaurantById(@PathVariable int id) {
+    public RestaurantDto findRestaurantById(@PathVariable int id) {
         return restaurantsService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createRestaurant(@RequestBody @Valid RestaurantDTO restaurantDTO,
+    public ResponseEntity<HttpStatus> createRestaurant(@RequestBody @Valid RestaurantDto restaurantDTO,
                                                        @RequestParam(required = false) RestaurantType restaurantType,
                                                        @RequestParam(required = false) Float rating,
                                                        BindingResult bindingResult) {
@@ -60,7 +60,7 @@ public class RestaurantApiController implements ShowErrorMessage {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable("id") int id, @RequestBody @Valid RestaurantDTO restaurantDTO) {
+    public ResponseEntity<HttpStatus> update(@PathVariable("id") int id, @RequestBody @Valid RestaurantDto restaurantDTO) {
         restaurantsService.updateRestaurant(id, restaurantDTO);
         return new ResponseEntity<>(HttpStatus.ACCEPTED, HttpStatus.OK);
     }

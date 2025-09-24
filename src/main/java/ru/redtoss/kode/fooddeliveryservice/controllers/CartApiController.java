@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.dto.CartDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.CartDto;
 import ru.redtoss.kode.fooddeliveryservice.services.CartService;
 import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
 import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
@@ -25,7 +25,7 @@ public class CartApiController {
 
 
     @GetMapping
-    public CartDTO findAll(@RequestParam("personId") Integer personId) {
+    public CartDto findAll(@RequestParam("personId") Integer personId) {
         return cartService.findAll(personId);
     }
 

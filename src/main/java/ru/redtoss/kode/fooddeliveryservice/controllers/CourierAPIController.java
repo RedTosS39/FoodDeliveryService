@@ -7,8 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.redtoss.kode.fooddeliveryservice.dto.CourierDTO;
-import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDTO;
+import ru.redtoss.kode.fooddeliveryservice.dto.CourierDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.CouriersService;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
@@ -34,22 +34,22 @@ public class CourierAPIController implements ShowErrorMessage {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<ProfileDTO> findAll() {
+    public List<ProfileDto> findAll() {
         return peopleService.findAllPeople(Role.COURIER);
     }
 
     @GetMapping("/{id}")
-    public ProfileDTO getCourierDTO(@PathVariable int id) {
+    public ProfileDto getCourierDTO(@PathVariable int id) {
         return peopleService.findProfileById(id);
     }
 
     @GetMapping("/")
-    public List<ProfileDTO> getPersonByRole(@RequestParam(value = "role") Role role) {
+    public List<ProfileDto> getPersonByRole(@RequestParam(value = "role") Role role) {
         return peopleService.findAllPeople(role);
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createCourier(@RequestBody @Valid CourierDTO courierDTO, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> createCourier(@RequestBody @Valid CourierDto courierDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String message = showErrorMessage(bindingResult);
             throw new PersonNotCreatedException(message);
@@ -59,7 +59,7 @@ public class CourierAPIController implements ShowErrorMessage {
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable int id, @RequestBody @Valid CourierDTO courierDTO) {
+    public void update(@PathVariable int id, @RequestBody @Valid CourierDto courierDTO) {
         peopleService.update(id, courierDTO);
     }
 
