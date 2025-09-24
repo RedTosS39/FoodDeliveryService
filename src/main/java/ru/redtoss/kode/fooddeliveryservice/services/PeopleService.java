@@ -1,5 +1,6 @@
 package ru.redtoss.kode.fooddeliveryservice.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 public class PeopleService implements ConvertEntity {
@@ -94,9 +96,10 @@ public class PeopleService implements ConvertEntity {
             personProfileEntity.setName(updater.getName());
             personProfileEntity.setUpdatedDate(LocalDateTime.now());
             profileRepository.save(personProfileEntity);
-        }
 
-        System.out.println("Person updated:");
+
+        }
+        log.info("Person updated:");
     }
 
     @Transactional
@@ -117,7 +120,6 @@ public class PeopleService implements ConvertEntity {
 
         return profile;
     }
-
 
 
 }

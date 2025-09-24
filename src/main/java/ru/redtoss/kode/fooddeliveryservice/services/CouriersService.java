@@ -43,6 +43,7 @@ public class CouriersService {
                 courierEntity.getFoodOrderEntities().add(order);
                 order.setCourierEntity(courierEntity);
                 order.setOrderStatus(OrderStatus.CONFIRMED);
+                order.setCourierEntity(courierEntity);
             } else {
                 throw new PersonNotCreatedException("Order has not been confirmed");
             }
