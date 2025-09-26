@@ -23,12 +23,10 @@ public class RestaurantEntity {
     @Column(name = "RESTAURANT_TYPE")
     private RestaurantType restaurantType;
 
-
     @Column(name = "RATING")
     @Min(value = 0)
     @Max(value = 5)
     private Float rating;
-
 
     @Min(value = 0)
     @Max(value = 5)

@@ -6,10 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.CartDto;
 import ru.redtoss.kode.fooddeliveryservice.services.CartService;
-import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
 
 @RestController
 @RequestMapping("/cart")
@@ -49,31 +45,4 @@ public class CartApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(RestaurantNotFoundException error) {
-        DefaultErrorResponse response = new DefaultErrorResponse(
-                error.getMessage() + " Restaurant with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(DishNotFoundException error) {
-        DefaultErrorResponse response = new DefaultErrorResponse(
-                error.getMessage() + " Dish with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(PersonNotFoundException ex) {
-        DefaultErrorResponse errorResponse = new DefaultErrorResponse(
-                ex.getMessage() + " Person with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
 }

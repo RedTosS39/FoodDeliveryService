@@ -8,13 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.CourierDto;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodOrderDto;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.services.CouriersService;
 import ru.redtoss.kode.fooddeliveryservice.services.PeopleService;
-import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.services.ShowErrorMessage;
 
 import java.util.List;
 
@@ -75,13 +75,12 @@ public class CourierAPIController implements ShowErrorMessage {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(PersonNotFoundException error) {
-        DefaultErrorResponse response = new DefaultErrorResponse(
-                error.getMessage() + " person with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+
+    @GetMapping("/{id}/orders")
+    public List<FoodOrderDto> findAllOrders(@PathVariable("id") int id) {
+        return couriersService.findAllOrders(id);
     }
+
+
 }
 

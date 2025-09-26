@@ -15,19 +15,16 @@ import ru.redtoss.kode.fooddeliveryservice.repositories.CartRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodDishRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.RestaurantRepository;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotCreatedException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.DishNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.RestaurantNotCreatedException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.RestaurantNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 
-import static java.rmi.server.LogStream.log;
-
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 public class CartService implements ConvertEntity {
 
     private final ProfileRepository profileRepository;
@@ -75,7 +72,7 @@ public class CartService implements ConvertEntity {
             if (optionalFoodDish.isPresent()) {
                 FoodDishEntity foodDishEntity = optionalFoodDish.get();
                 int newQty = foodDishEntity.getQuantity() - 1;
-                log.info("Dish after{} ", newQty );
+                log.info("Dish after{} ", newQty);
                 if (newQty < 1) {
                     personProfileEntity.getCartEntity().getFoodDishEntities().remove(foodDishEntity);
                     foodDishEntity.setCartEntity(null);
@@ -99,46 +96,40 @@ public class CartService implements ConvertEntity {
         Hibernate.initialize(RestaurantEntity.class);
         Hibernate.initialize(PersonProfileEntity.class);
 
-        Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        Optional<FoodDishEntity> optionalFoodDish = foodDishRepository.findById(dishId);
-        Optional<PersonProfileEntity> personProfileOptional = profileRepository.findById(userId);
+        RestaurantEntity restaurantEntity = restaurantRepository.findById(restaurantId).orElseThrow(RestaurantNotFoundException::new);
+        FoodDishEntity foodDishEntity = foodDishRepository.findById(dishId).orElseThrow(() -> new DishNotFoundException("Dish with id: " + dishId + " not found"));
+        PersonProfileEntity person = profileRepository.findById(userId).orElseThrow(PersonNotFoundException::new);
 
+        CartEntity cartEntity = person.getCartEntity();
 
-        if (optionalFoodDish.isPresent() && personProfileOptional.isPresent() && optionalRestaurant.isPresent()) {
+        if (!restaurantEntity.getActive()) {
+            throw new RestaurantNotCreatedException("Restaurant is close");
+        }
 
-            RestaurantEntity restaurantEntity = optionalRestaurant.get();
-            FoodDishEntity foodDishEntity = optionalFoodDish.get();
-            PersonProfileEntity person = personProfileOptional.get();
-            CartEntity cartEntity = personProfileOptional.get().getCartEntity();
+        if (restaurantEntity.getMenu()
+                    .getDishes()
+                    .stream()
+                    .anyMatch(it -> it.getId() == dishId) && cartEntity != null) {
+            Optional<FoodDishEntity> currentDish = person.getCartEntity()
+                    .getFoodDishEntities()
+                    .stream()
+                    .filter(it -> it.getId() == dishId)
+                    .findFirst();
 
-            if (!restaurantEntity.getActive()) {
-                throw new RestaurantNotCreatedException("Restaurant is close");
-            }
-
-            if (restaurantEntity.getMenu().getDishes().stream().anyMatch(it -> it.getId() == dishId) && cartEntity != null) {
-                Optional<FoodDishEntity> currentDish = person.getCartEntity()
-                        .getFoodDishEntities()
-                        .stream()
-                        .filter(it -> it.getId() == dishId)
-                        .findFirst();
-
-                if (currentDish.isPresent()) {
-                    currentDish.get().setQuantity(currentDish.get().getQuantity() + 1);
-                    foodDishRepository.save(currentDish.get());
-                } else {
-                    foodDishEntity.setQuantity(1);
-                    person.getCartEntity().getFoodDishEntities().add(foodDishEntity);
-
-                    foodDishEntity.setCartEntity(person.getCartEntity());
-                    foodDishRepository.save(foodDishEntity);
-                }
-
-                cartRepository.save(person.getCartEntity());
+            if (currentDish.isPresent()) {
+                currentDish.get().setQuantity(currentDish.get().getQuantity() + 1);
+                foodDishRepository.save(currentDish.get());
             } else {
-                throw new DishNotFoundException("Dish not found");
+                foodDishEntity.setQuantity(1);
+                person.getCartEntity().getFoodDishEntities().add(foodDishEntity);
+
+                foodDishEntity.setCartEntity(person.getCartEntity());
+                foodDishRepository.save(foodDishEntity);
             }
+
+            cartRepository.save(person.getCartEntity());
         } else {
-            throw new RestaurantNotFoundException();
+            throw new DishNotFoundException("Dish not found");
         }
     }
 

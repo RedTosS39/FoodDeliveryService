@@ -7,11 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.RestaurantDto;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.RestaurantNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
-import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotCreatedException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.services.ShowErrorMessage;
 
 import java.util.List;
 
@@ -70,14 +69,5 @@ public class RestaurantApiController implements ShowErrorMessage {
     public ResponseEntity<HttpStatus> deleteRestaurant(@PathVariable("id") int id) {
         restaurantsService.deleteRestaurant(id);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(RestaurantNotFoundException error) {
-        DefaultErrorResponse response = new DefaultErrorResponse(
-                error.getMessage() + " Restaurant with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

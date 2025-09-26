@@ -13,8 +13,8 @@ import ru.redtoss.kode.fooddeliveryservice.entities.RestaurantEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodDishRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodMenuRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.RestaurantRepository;
-import ru.redtoss.kode.fooddeliveryservice.utils.MenuNotCreatedException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.MenuNotCreatedException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.RestaurantNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 public class RestaurantsService implements ConvertEntity {
 
     private final RestaurantRepository restaurantRepository;
@@ -30,7 +29,9 @@ public class RestaurantsService implements ConvertEntity {
     private final FoodDishRepository foodDishRepository;
 
     @Autowired
-    public RestaurantsService(RestaurantRepository restaurantRepository, FoodMenuRepository foodMenuRepository, FoodDishRepository foodDishRepository) {
+    public RestaurantsService(RestaurantRepository restaurantRepository,
+                              FoodMenuRepository foodMenuRepository,
+                              FoodDishRepository foodDishRepository) {
         this.restaurantRepository = restaurantRepository;
         this.foodMenuRepository = foodMenuRepository;
         this.foodDishRepository = foodDishRepository;
@@ -40,7 +41,7 @@ public class RestaurantsService implements ConvertEntity {
         return restaurantRepository.findAll()
                 .stream()
                 .filter(RestaurantEntity::getActive
-        ).map(this::convertToRestaurantDTO).collect(Collectors.toList());
+                ).map(this::convertToRestaurantDTO).collect(Collectors.toList());
     }
 
 
@@ -68,51 +69,47 @@ public class RestaurantsService implements ConvertEntity {
     @Transactional
     public void createDish(int id, FoodDishDto dishDTO) {
         FoodDishEntity dish = convertToFoodDish(dishDTO);
-        Optional<FoodMenuEntity> optionalFoodMenu = foodMenuRepository.findById(id);
-        if (optionalFoodMenu.isPresent()) {
-            FoodMenuEntity foodMenuEntity = optionalFoodMenu.get();
-            if (foodMenuEntity.getDishes().stream()
-                    .anyMatch(it -> it.getDishName().equals(dishDTO.getDishName()))) {
-                dish.setQuantity(dishDTO.getDishQuantity());
-            } else {
-                dish.setFoodMenuEntity(foodMenuEntity);
-                dish.setAvailable(true);
-                dish.setPrice(dishDTO.getDishPrice());
-                dish.setQuantity(dishDTO.getDishQuantity());
-                foodMenuEntity.getDishes().add(dish);
-            }
-            foodDishRepository.save(dish);
-            foodMenuRepository.save(foodMenuEntity);
+        FoodMenuEntity foodMenuEntity = foodMenuRepository.findById(id).orElseThrow(MenuNotCreatedException::new);
+
+        if (foodMenuEntity.getDishes()
+                .stream()
+                .anyMatch(it -> it.getDishName().equals(dishDTO.getDishName()))) {
+            dish.setQuantity(dishDTO.getDishQuantity());
         } else {
-            throw new MenuNotCreatedException();
+            dish.setFoodMenuEntity(foodMenuEntity);
+            dish.setAvailable(true);
+            dish.setPrice(dishDTO.getDishPrice());
+            dish.setQuantity(dishDTO.getDishQuantity());
+            foodMenuEntity.getDishes().add(dish);
         }
+        foodDishRepository.save(dish);
+        foodMenuRepository.save(foodMenuEntity);
     }
+
 
     @Transactional
     public void updateRestaurant(int id, RestaurantDto updater) {
-        Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(id);
-        if (optionalRestaurant.isPresent()) {
-            RestaurantEntity restaurantEntity = optionalRestaurant.get();
-            restaurantEntity.setName(updater.getName());
-            if (updater.getRating() != null) {
-                restaurantEntity.setRating(updater.getRating());
-            }
+        RestaurantEntity restaurantEntity = restaurantRepository.findById(id).orElseThrow(RestaurantNotFoundException::new);
 
-            if (updater.getActive() != null) {
-                restaurantEntity.setActive(updater.getActive());
-            }
+        restaurantEntity.setName(updater.getName());
 
-            if (updater.getRestaurantType() != null) {
-                restaurantEntity.setRestaurantType(updater.getRestaurantType());
-            }
-
-            restaurantRepository.save(restaurantEntity);
-
-            log.info("restaurantEntity: {}", restaurantEntity);
-        } else {
-            throw new RestaurantNotFoundException();
+        if (updater.getRating() != null) {
+            restaurantEntity.setRating(updater.getRating());
         }
+
+        if (updater.getActive() != null) {
+            restaurantEntity.setActive(updater.getActive());
+        }
+
+        if (updater.getRestaurantType() != null) {
+            restaurantEntity.setRestaurantType(updater.getRestaurantType());
+        }
+
+        restaurantRepository.save(restaurantEntity);
+
+        log.info("restaurantEntity: {}", restaurantEntity);
     }
+
 
     @Transactional
     public void deleteRestaurant(int id) {

@@ -7,11 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.redtoss.kode.fooddeliveryservice.dto.FoodDishDto;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.DishNotCreatedException;
 import ru.redtoss.kode.fooddeliveryservice.services.FoodDishService;
 import ru.redtoss.kode.fooddeliveryservice.services.RestaurantsService;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotCreatedException;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.DefaultErrorResponse;
+import ru.redtoss.kode.fooddeliveryservice.services.ShowErrorMessage;
 
 import java.util.List;
 
@@ -71,15 +70,5 @@ public class DishApiController implements ShowErrorMessage {
                                              @PathVariable int menu_id) {
         foodDishService.delete(menu_id);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @ExceptionHandler
-    private ResponseEntity<DefaultErrorResponse> handleException(DishNotFoundException error) {
-        DefaultErrorResponse response = new DefaultErrorResponse(
-                error.getMessage() + " dish with id not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

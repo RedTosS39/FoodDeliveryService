@@ -2,6 +2,7 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 
@@ -17,6 +18,7 @@ public class PersonService {
         this.personRepository = personRepository1;
     }
 
+    @Transactional(readOnly = true)
     public List<PersonEntity> findAll() {
         return personRepository.findAll();
     }

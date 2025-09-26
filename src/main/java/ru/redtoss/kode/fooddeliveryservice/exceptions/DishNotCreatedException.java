@@ -1,4 +1,4 @@
-package ru.redtoss.kode.fooddeliveryservice.utils;
+package ru.redtoss.kode.fooddeliveryservice.exceptions;
 
 public class DishNotCreatedException extends RuntimeException {
     public DishNotCreatedException(String message) {

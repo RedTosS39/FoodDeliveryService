@@ -4,8 +4,13 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import ru.redtoss.kode.fooddeliveryservice.models.RestaurantType;
 
+
+@Getter
+@Setter
 public class RestaurantDto {
 
     private int id;
@@ -18,43 +23,12 @@ public class RestaurantDto {
 
     private RestaurantType restaurantType;
 
-
     @Min(value = 0)
     @Max(value = 5)
     private Float rating;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
     public Boolean getActive() {
         return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public RestaurantType getRestaurantType() {
-        return restaurantType;
-    }
-
-    public void setRestaurantType(RestaurantType restaurantType) {
-        this.restaurantType = restaurantType;
     }
 
     public @Min(value = 0) @Max(value = 5) Float getRating() {

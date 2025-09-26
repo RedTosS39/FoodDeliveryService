@@ -3,18 +3,20 @@ package ru.redtoss.kode.fooddeliveryservice.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.redtoss.kode.fooddeliveryservice.dto.FoodOrderDto;
 import ru.redtoss.kode.fooddeliveryservice.entities.CourierEntity;
 import ru.redtoss.kode.fooddeliveryservice.entities.FoodOrderEntity;
 import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CourierRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.OrderRepository;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotCreatedException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotCreatedException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
-public class CouriersService {
+public class CouriersService implements ConvertEntity {
     private final CourierRepository courierRepository;
     private final OrderRepository orderRepository;
 
@@ -23,6 +25,14 @@ public class CouriersService {
                            OrderRepository orderRepository) {
         this.courierRepository = courierRepository;
         this.orderRepository = orderRepository;
+    }
+
+    public List<FoodOrderDto> findAllOrders(int id) {
+        CourierEntity courier = courierRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        return courier.getFoodOrderEntities()
+                .stream()
+                .map(this::convertToFoodOrderDTO)
+                .toList();
     }
 
 
