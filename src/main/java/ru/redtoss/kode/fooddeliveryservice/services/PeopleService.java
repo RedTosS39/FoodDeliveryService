@@ -12,7 +12,7 @@ import ru.redtoss.kode.fooddeliveryservice.models.Status;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CartRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 public class PeopleService implements ConvertEntity {
     private final PersonRepository personRepository;
     private final ProfileRepository profileRepository;
@@ -48,11 +47,8 @@ public class PeopleService implements ConvertEntity {
     }
 
     public ProfileDto findProfileById(int id) {
-        Optional<PersonProfileEntity> optionalPersonProfile = profileRepository.findById(id);
-        if (optionalPersonProfile.isPresent()) {
-            return converToProfileDTO(optionalPersonProfile.get());
-        }
-        throw new PersonNotFoundException();
+        PersonProfileEntity profile = profileRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        return converToProfileDTO(profile);
     }
 
     @Transactional
@@ -89,35 +85,26 @@ public class PeopleService implements ConvertEntity {
 
     @Transactional
     public void update(int id, ProfileUpdater updater) {
-        Optional<PersonProfileEntity> profile = personRepository.findProfileWithId(id);
-        if (profile.isPresent()) {
-            PersonProfileEntity personProfileEntity = profile.get();
-            personProfileEntity.setId(id);
-            personProfileEntity.setName(updater.getName());
-            personProfileEntity.setUpdatedDate(LocalDateTime.now());
-            profileRepository.save(personProfileEntity);
+        PersonProfileEntity personProfileEntity = personRepository.findProfileWithId(id).orElseThrow(PersonNotFoundException::new);
+        personProfileEntity.setId(id);
+        personProfileEntity.setName(updater.getName());
+        personProfileEntity.setUpdatedDate(LocalDateTime.now());
+        profileRepository.save(personProfileEntity);
 
-
-        }
         log.info("Person updated:");
     }
 
     @Transactional
     public void deletePersonProfile(int id) {
-        Optional<PersonProfileEntity> profile = profileRepository.findById(id);
-        if (profile.isPresent())
-            profile.get().setIsActive(false);
-        else
-            throw new PersonNotFoundException();
+        PersonProfileEntity profile = profileRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        profile.setIsActive(false);
     }
 
     private PersonProfileEntity createUserProfile(String name, Role role) {
-
         PersonProfileEntity profile = new PersonProfileEntity();
         profile.setName(name);
         profile.setRole(role);
         profile.setUpdatedDate(LocalDateTime.now());
-
         return profile;
     }
 

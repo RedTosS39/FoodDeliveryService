@@ -1,8 +1,7 @@
-package ru.redtoss.kode.fooddeliveryservice.controllers;
+package ru.redtoss.kode.fooddeliveryservice.services;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 

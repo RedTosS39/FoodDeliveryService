@@ -8,14 +8,13 @@ import ru.redtoss.kode.fooddeliveryservice.entities.FoodDishEntity;
 import ru.redtoss.kode.fooddeliveryservice.entities.RestaurantEntity;
 import ru.redtoss.kode.fooddeliveryservice.repositories.FoodDishRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.RestaurantRepository;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.RestaurantNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.DishNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.RestaurantNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class FoodDishService implements ConvertEntity {
 
     private final FoodDishRepository foodDishRepository;
@@ -28,27 +27,21 @@ public class FoodDishService implements ConvertEntity {
     }
 
     public List<FoodDishDto> findAll(int id) {
-        Optional<RestaurantEntity> optionalRestaurant = restaurantRepository.findById(id);
-        if (optionalRestaurant.isPresent()) {
-            return optionalRestaurant.get()
-                    .getMenu()
-                    .getDishes()
-                    .stream()
-                    .filter(FoodDishEntity::getAvailable)
-                    .map(this::convertToFoodDishDTO).toList();
-        } else {
-            throw new RestaurantNotFoundException();
-        }
+        RestaurantEntity optionalRestaurant = restaurantRepository.findById(id).orElseThrow(RestaurantNotFoundException::new);
+        return optionalRestaurant
+                .getMenu()
+                .getDishes()
+                .stream()
+                .filter(FoodDishEntity::getAvailable)
+                .map(this::convertToFoodDishDTO).toList();
     }
 
     @Transactional
     public void update(int id, FoodDishDto foodDishDTO) {
-        Optional<FoodDishEntity> foodDish = foodDishRepository.findById(id);
-        if (foodDish.isPresent()) {
-            foodDish.get().setId(id);
-            foodDish.get().setDishName(foodDishDTO.getDishName());
-            foodDish.get().setPrice(foodDishDTO.getDishPrice());
-        }
+        FoodDishEntity foodDish = foodDishRepository.findById(id).orElseThrow(() -> new DishNotFoundException("dish with id: " + id + " not found"));
+        foodDish.setId(id);
+        foodDish.setDishName(foodDishDTO.getDishName());
+        foodDish.setPrice(foodDishDTO.getDishPrice());
     }
 
     @Transactional

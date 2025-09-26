@@ -12,9 +12,9 @@ import ru.redtoss.kode.fooddeliveryservice.entities.FoodOrderEntity;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfileEntity;
 import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 import ru.redtoss.kode.fooddeliveryservice.repositories.*;
-import ru.redtoss.kode.fooddeliveryservice.utils.DishNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.OrderNotFoundException;
-import ru.redtoss.kode.fooddeliveryservice.utils.PersonNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.DishNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.OrderNotFoundException;
+import ru.redtoss.kode.fooddeliveryservice.exceptions.PersonNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 public class OrdersService implements ConvertEntity {
 
     private final ProfileRepository personRepository;
@@ -66,44 +65,37 @@ public class OrdersService implements ConvertEntity {
 
     @Transactional
     public void createOrder(int personId) {
-        Optional<PersonProfileEntity> optionalPersonProfile = personRepository.findById(personId);
-        if (optionalPersonProfile.isPresent()) {
-            PersonProfileEntity profile = optionalPersonProfile.get();
-            CartEntity cartEntity = profile.getCartEntity();
-            List<FoodDishEntity> dishesFromCart = cartEntity.getFoodDishEntities();
+        PersonProfileEntity profile = personRepository.findById(personId).orElseThrow(PersonNotFoundException::new);
 
-            if (cartEntity.countSum() < 300) {
-                throw new DishNotFoundException("Order must be more then 300" + " Sum now:" + cartEntity.countSum());
-            }
+        CartEntity cartEntity = profile.getCartEntity();
+        List<FoodDishEntity> dishesFromCart = cartEntity.getFoodDishEntities();
 
-            if (dishesFromCart == null || dishesFromCart.isEmpty()) {
-                throw new DishNotFoundException("This person doesn't have any food dish in the cart");
-            }
-
-
-            FoodOrderEntity order = new FoodOrderEntity();
-
-            order.setFoodDishEntities(new ArrayList<>(dishesFromCart));
-            order.setPeople(profile);
-            order.setOrderStatus(OrderStatus.NEW);
-            orderRepository.save(order);
-
-            for (FoodDishEntity dish : dishesFromCart) {
-                dish.setFoodOrderEntity(order);
-                dish.setCartEntity(null);
-            }
-
-            profile.getFoodOrderEntityList().add(order);
-
-            cartEntity.getFoodDishEntities().clear();
-            cartRepository.save(cartEntity);
-
-            profile.getFoodOrderEntityList().add(order);
-            personRepository.save(profile);
-
-        } else {
-            throw new PersonNotFoundException();
+        if (cartEntity.countSum() < 300) {
+            throw new DishNotFoundException("Order must be more then 300" + " Sum now:" + cartEntity.countSum());
         }
+
+        if (dishesFromCart == null || dishesFromCart.isEmpty()) {
+            throw new DishNotFoundException("This person doesn't have any food dish in the cart");
+        }
+
+        FoodOrderEntity order = new FoodOrderEntity();
+        order.setFoodDishEntities(new ArrayList<>(dishesFromCart));
+        order.setPeople(profile);
+        order.setOrderStatus(OrderStatus.NEW);
+        orderRepository.save(order);
+
+        for (FoodDishEntity dish : dishesFromCart) {
+            dish.setFoodOrderEntity(order);
+            dish.setCartEntity(null);
+        }
+
+        profile.getFoodOrderEntityList().add(order);
+
+        cartEntity.getFoodDishEntities().clear();
+        cartRepository.save(cartEntity);
+
+        profile.getFoodOrderEntityList().add(order);
+        personRepository.save(profile);
     }
 
     public List<FoodDishDto> findOrderById(int id) {

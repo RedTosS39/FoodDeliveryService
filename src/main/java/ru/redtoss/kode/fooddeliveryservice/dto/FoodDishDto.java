@@ -2,11 +2,18 @@ package ru.redtoss.kode.fooddeliveryservice.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
 public class FoodDishDto {
+    @Getter
     @Size(min = 2, max = 50)
     private String dishName;
 
+    @Getter
     @Min(value = 1)
     private Integer dishPrice;
 
@@ -34,21 +41,11 @@ public class FoodDishDto {
         this.dishQuantity = dishQuantity;
     }
 
-    public String getDishName() {
-        return dishName;
-    }
-
     public void setDishName(String dishName) {
         this.dishName = dishName;
-    }
-
-    public Integer getDishPrice() {
-        return dishPrice;
     }
 
     public void setDishPrice(Integer dishPrice) {
         this.dishPrice = dishPrice;
     }
-
-
 }

@@ -1,13 +1,19 @@
 package ru.redtoss.kode.fooddeliveryservice.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import ru.redtoss.kode.fooddeliveryservice.models.OrderStatus;
 
 import java.util.List;
 
+@Setter
+@Getter
 public class FoodOrderDto {
 
     private List<FoodDishDto> foodDishDtoList;
+
     private OrderStatus status;
+    @Getter
     private int sum;
 
     public void setFoodDishDTOList(List<FoodDishDto> foodDishDtoList) {
@@ -23,18 +29,6 @@ public class FoodOrderDto {
 
     public List<FoodDishDto> getFoodDishDTOList() {
         return foodDishDtoList;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public int getSum() {
-        return sum;
     }
 
     @Override
