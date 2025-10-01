@@ -60,7 +60,7 @@ public class CourierAPIController implements ShowErrorMessage {
 
     @PutMapping("/{id}")
     public void update(@PathVariable int id, @RequestBody @Valid CourierDto courierDTO) {
-        peopleService.update(id, courierDTO);
+        couriersService.update(id, courierDTO);
     }
 
     @DeleteMapping("/{id}")

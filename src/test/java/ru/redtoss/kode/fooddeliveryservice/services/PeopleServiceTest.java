@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 import ru.redtoss.kode.fooddeliveryservice.dto.CourierDto;
-import ru.redtoss.kode.fooddeliveryservice.dto.PersonDto;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonEntity;
 import ru.redtoss.kode.fooddeliveryservice.entities.PersonProfileEntity;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
 import ru.redtoss.kode.fooddeliveryservice.repositories.CartRepository;
+import ru.redtoss.kode.fooddeliveryservice.repositories.PersonRepository;
 import ru.redtoss.kode.fooddeliveryservice.repositories.ProfileRepository;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 
 @Slf4j
 @SpringBootTest
@@ -35,6 +34,14 @@ class PeopleServiceTest {
     private static final int PROFILE_ID = 1;
     private static final LocalDateTime DATE_TIME = LocalDateTime.now();
 
+    @MockitoBean
+    private PersonRepository personRepository;
+    @MockitoBean
+    private ProfileRepository profileRepository;
+    @MockitoBean
+    private CartRepository cartRepository;
+    @Autowired
+    private PeopleService peopleService;
 
     private final ConvertEntity convertEntity = new ConvertEntity() {
         @Override
@@ -46,20 +53,17 @@ class PeopleServiceTest {
         public ProfileDto converToProfileDTO(PersonProfileEntity person) {
             return ConvertEntity.super.converToProfileDTO(person);
         }
-    };
 
-    @MockitoBean
-    private ProfileRepository profileRepository;
-    @MockitoBean
-    private CartRepository cartRepository;
-    @Autowired
-    private PeopleService peopleService;
+        @Override
+        public PersonEntity convertToPerson(ProfileUpdater personDTO) {
+            return ConvertEntity.super.convertToPerson(personDTO);
+        }
+    };
 
 
     @Test
     void findAllPeople() {
-        PersonProfileEntity mockProfile = cratePersonProfile();
-        mockProfile.setRole(Role.BUYER);
+        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
         List<PersonProfileEntity> expected = Arrays.asList(mockProfile);
         when(profileRepository.findAll()).thenReturn(expected);
         List<ProfileDto> actual = peopleService.findAllPeople(Role.BUYER);
@@ -69,8 +73,7 @@ class PeopleServiceTest {
 
     @Test
     void findProfileById() {
-        PersonProfileEntity mockProfile = cratePersonProfile();
-        mockProfile.setRole(Role.BUYER);
+        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
         ProfileDto expected = convertEntity.converToProfileDTO(mockProfile);
         when(profileRepository.findById(PROFILE_ID)).thenReturn(Optional.of(mockProfile));
         ProfileDto actual = peopleService.findProfileById(PROFILE_ID);
@@ -84,8 +87,8 @@ class PeopleServiceTest {
         ProfileUpdater profileUpdater = mock(ProfileUpdater.class);
         when(profileUpdater.getName()).thenReturn(NAME);
 
-        PersonProfileEntity expected = cratePersonProfile();
-        expected.setRole(Role.BUYER);
+        PersonProfileEntity expected = cratePersonProfile(Role.BUYER);
+
         when(profileRepository.save(any(PersonProfileEntity.class))).thenReturn(expected);
         peopleService.createPerson(profileUpdater, expected.getRole());
 
@@ -97,8 +100,7 @@ class PeopleServiceTest {
     void createCourier() {
         ProfileUpdater profileUpdater = mock(ProfileUpdater.class);
         when(profileUpdater.getName()).thenReturn(NAME);
-        PersonProfileEntity expected = cratePersonProfile();
-        expected.setRole(Role.COURIER);
+        PersonProfileEntity expected = cratePersonProfile(Role.COURIER);
 
         when(profileRepository.save(any(PersonProfileEntity.class))).thenReturn(expected);
         peopleService.createCourier(profileUpdater, expected.getRole());
@@ -107,20 +109,27 @@ class PeopleServiceTest {
     }
 
     @Test
+    @Transactional
     void update() {
-
+        //TODO:org.mockito.exceptions.misusing.MissingMethodInvocationException:
     }
 
     @Test
+    @Transactional
     void deletePersonProfile() {
+        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
+        when(profileRepository.findById(PROFILE_ID)).thenReturn(Optional.of(mockProfile));
+        peopleService.deletePersonProfile(PROFILE_ID);
+        verify(profileRepository, times(1)).findById(PROFILE_ID);
     }
 
-    private PersonProfileEntity cratePersonProfile() {
+    private PersonProfileEntity cratePersonProfile(Role role) {
         PersonProfileEntity personProfileEntity = new PersonProfileEntity();
         personProfileEntity.setId(PROFILE_ID);
         personProfileEntity.setName(NAME);
         personProfileEntity.setUpdatedDate(DATE_TIME);
         personProfileEntity.setIsActive(true);
+        personProfileEntity.setRole(role);
         return personProfileEntity;
     }
 }
