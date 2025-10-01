@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import ru.redtoss.kode.fooddeliveryservice.services.ProfileUpdater;
 
-public class PersonDto implements ProfileUpdater {
+public class PersonDto extends ProfileUpdater {
 
     public PersonDto() {
 
