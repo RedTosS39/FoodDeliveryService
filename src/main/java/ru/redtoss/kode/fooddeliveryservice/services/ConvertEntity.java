@@ -28,6 +28,10 @@ public interface ConvertEntity {
         return modelMapper.map(personDTO, PersonEntity.class);
     }
 
+    default PersonDto converToPersonDTO(ProfileUpdater person) {
+        return modelMapper.map(person, PersonDto.class);
+    }
+
     default RestaurantEntity convertToRestaurant(RestaurantDto profileDTO) {
         return modelMapper.map(profileDTO, RestaurantEntity.class);
     }

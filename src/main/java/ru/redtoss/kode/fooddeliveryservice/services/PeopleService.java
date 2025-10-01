@@ -5,6 +5,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.redtoss.kode.fooddeliveryservice.dto.PersonDto;
 import ru.redtoss.kode.fooddeliveryservice.dto.ProfileDto;
 import ru.redtoss.kode.fooddeliveryservice.entities.*;
 import ru.redtoss.kode.fooddeliveryservice.models.Role;
@@ -108,6 +109,4 @@ public class PeopleService implements ConvertEntity {
         profile.setUpdatedDate(LocalDateTime.now());
         return profile;
     }
-
-
 }
