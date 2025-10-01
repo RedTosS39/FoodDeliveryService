@@ -62,6 +62,7 @@ public class PeopleService implements ConvertEntity {
 
         Hibernate.initialize(CartEntity.class);
         CartEntity cartEntity = new CartEntity();
+
         cartEntity.setPersonProfileEntity(profile);
         List<FoodDishEntity> dishes = new ArrayList<>();
         cartEntity.setFoodDishEntities(dishes);

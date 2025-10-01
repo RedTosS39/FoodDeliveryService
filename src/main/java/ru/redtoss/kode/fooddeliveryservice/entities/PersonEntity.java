@@ -11,7 +11,6 @@ import lombok.Setter;
 @Entity
 @Getter
 @Table(name = "Person")
-@RequiredArgsConstructor
 public class PersonEntity {
     @Id
     @Setter
@@ -29,7 +28,14 @@ public class PersonEntity {
     @OneToOne(mappedBy = "personEntity")
     private PersonProfileEntity profile;
 
+    public PersonEntity(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
+    public PersonEntity() {
+
+    }
 
     public void setProfile(PersonProfileEntity profile) {
         this.profile = profile;
@@ -46,6 +52,8 @@ public class PersonEntity {
         }
         this.profile = null;
     }
+
+
 
 
     @Override
