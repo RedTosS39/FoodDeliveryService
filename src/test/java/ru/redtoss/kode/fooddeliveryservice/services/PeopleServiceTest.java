@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @Slf4j
@@ -33,6 +34,8 @@ class PeopleServiceTest {
     private static final String NAME = "test";
     private static final int PROFILE_ID = 1;
     private static final LocalDateTime DATE_TIME = LocalDateTime.now();
+    private final PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
+    private final  ProfileUpdater profileUpdater = mock(ProfileUpdater.class);
 
     @MockitoBean
     private PersonRepository personRepository;
@@ -62,8 +65,7 @@ class PeopleServiceTest {
 
 
     @Test
-    void findAllPeople() {
-        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
+    void testFindAllPeople() {
         List<PersonProfileEntity> expected = Arrays.asList(mockProfile);
         when(profileRepository.findAll()).thenReturn(expected);
         List<ProfileDto> actual = peopleService.findAllPeople(Role.BUYER);
@@ -72,8 +74,7 @@ class PeopleServiceTest {
     }
 
     @Test
-    void findProfileById() {
-        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
+    void testFindProfileById() {
         ProfileDto expected = convertEntity.converToProfileDTO(mockProfile);
         when(profileRepository.findById(PROFILE_ID)).thenReturn(Optional.of(mockProfile));
         ProfileDto actual = peopleService.findProfileById(PROFILE_ID);
@@ -84,21 +85,17 @@ class PeopleServiceTest {
     @Test
     @Transactional
     void createPerson() {
-        ProfileUpdater profileUpdater = mock(ProfileUpdater.class);
         when(profileUpdater.getName()).thenReturn(NAME);
-
-        PersonProfileEntity expected = cratePersonProfile(Role.BUYER);
-
-        when(profileRepository.save(any(PersonProfileEntity.class))).thenReturn(expected);
-        peopleService.createPerson(profileUpdater, expected.getRole());
+        when(profileRepository.save(any(PersonProfileEntity.class))).thenReturn(mockProfile);
+        peopleService.createPerson(profileUpdater, mockProfile.getRole());
 
         verify(profileRepository, times(1)).save(any(PersonProfileEntity.class));
     }
 
     @Test
     @Transactional
+
     void createCourier() {
-        ProfileUpdater profileUpdater = mock(ProfileUpdater.class);
         when(profileUpdater.getName()).thenReturn(NAME);
         PersonProfileEntity expected = cratePersonProfile(Role.COURIER);
 
@@ -117,7 +114,6 @@ class PeopleServiceTest {
     @Test
     @Transactional
     void deletePersonProfile() {
-        PersonProfileEntity mockProfile = cratePersonProfile(Role.BUYER);
         when(profileRepository.findById(PROFILE_ID)).thenReturn(Optional.of(mockProfile));
         peopleService.deletePersonProfile(PROFILE_ID);
         verify(profileRepository, times(1)).findById(PROFILE_ID);

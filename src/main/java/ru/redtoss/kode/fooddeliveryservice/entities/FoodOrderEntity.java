@@ -33,6 +33,25 @@ public class FoodOrderEntity {
     @Column(name = "STATUS")
     private OrderStatus orderStatus;
 
+    @OneToOne(mappedBy = "foodOrder")
+    private PaymentEntity payment;
+
+    public List<FoodDishEntity> getFoodDishes() {
+        return foodDishes;
+    }
+
+    public void setFoodDishes(List<FoodDishEntity> foodDishes) {
+        this.foodDishes = foodDishes;
+    }
+
+    public PaymentEntity getPayment() {
+        return payment;
+    }
+
+    public void setPayment(PaymentEntity payment) {
+        this.payment = payment;
+    }
+
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
@@ -72,7 +91,6 @@ public class FoodOrderEntity {
     public void setFoodDishEntities(List<FoodDishEntity> foodDishEntities) {
         this.foodDishes = foodDishEntities;
     }
-
 
 
     @Override
